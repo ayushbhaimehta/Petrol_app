@@ -24,10 +24,16 @@ const validateGetByPhoneNo = (phoneNo) => {
     return Joi.validate(phoneNo, userSchemaModel.getByPhoneNoSchema);
 }
 
+const validateUpdateAddressSchema = (loginInfo) => {
+    console.log("flagger");
+    return Joi.validate(loginInfo, userSchemaModel.updateAddressSchemaModel)
+}
+
 module.exports = {
     validateNewUserSchema,
     validateLoginUserSchema,
     validateGetUsernameSchema,
     validateGetByPhoneNo,
-    ValidatorUpdatePhoneSchema
+    ValidatorUpdatePhoneSchema,
+    validateUpdateAddressSchema
 }

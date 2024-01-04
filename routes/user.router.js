@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerNewUser, loginController, getByUsernameController, updatePhoneController, getByPhoneNoController } = require('../controllers/user.controller')
+const { registerNewUser, loginController, getByUsernameController, updateAddress, updatePhoneController, getByPhoneNoController } = require('../controllers/user.controller')
 
 const userRouter = express.Router();
 
@@ -8,7 +8,7 @@ userRouter.get('/getbyphoneno/:phoneno', getByPhoneNoController);
 userRouter.post('/register', registerNewUser);
 userRouter.post('/login', loginController);
 userRouter.post('/updatephone', updatePhoneController);
-// userRouter.post('/login', loginController);
+userRouter.post('/updateAddress', updateAddress);
 // userRouter.post('/login', loginController);
 
 module.exports = userRouter;
