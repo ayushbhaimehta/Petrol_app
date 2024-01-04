@@ -39,7 +39,7 @@ app.use(function (req, res, next) {
 
 // -----------------> Routes <-----------------------------------//
 
-const userservicerouter = require('./controllers/user-controller');
+const userservicerouter = require('./routes/user.router');
 
 // -----------------> Routes Setup <---------------------------------//
 app.use('/api/user', userservicerouter);
