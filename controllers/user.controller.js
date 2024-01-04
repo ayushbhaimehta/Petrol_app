@@ -1,13 +1,29 @@
-// const express = require('express');
-const userDao = require('../Dao/user.dao')
+const express = require('express');
+const userValidator = require('../models/userSchema.validator');
+const userDao = require('../Dao/user.dao');
+const Logger = require('../logger/logger');
+const log = new Logger('User_Controller');
 
-async function registerController(req, res) {
+async function registerNewUser(req, res) {
     let userObj = req.body;
-    console.log({ userObj });
-    userDao.registerNewUser(userObj, res)
+    let { error } = userValidator.validateNewUserSchema(userObj);
+    if (isNotValidSchema(error, res)) return;
+    userDao.resgisterNewUser(userObj, res)
+        .then()
         .catch((err) => log.error(`Error in registering new user with username ${userObj.username}: ` + err));
 }
 
-module.exports = {
-    registerController
+function isNotValidSchema(error, res) {
+    if (error) {
+        log.error(`Schema validation error:${error.details[0].message}`);
+        res.status(400).send({
+            message: error.details[0].message
+        });
+        return true;
+    }
+    return false;
 }
+
+module.exports = {
+    registerNewUser
+};

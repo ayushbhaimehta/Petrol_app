@@ -7,7 +7,7 @@ require('dotenv').config()
 
 // console.log(app.get('env'));
 // set env
-const environment = process.env.NODE_ENV || "prod";
+const environment = process.env.NODE_ENV || "development";
 console.log({ environment });
 
 // Whitelisdty
@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 const userservicerouter = require('./routes/user.router');
 
 // -----------------> Routes Setup <---------------------------------//
-app.use('/api/user', userservicerouter);
+app.use('/user', userservicerouter);
 
 
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 
 
 if (environment === 'development') {
-    app.use(morgan('tiny'));
+    app.use(morgan('combined'));
     // ------------------------> Logger (Morgan) <---------------------------- //
     console.log('Morgan is enabled...');
 }

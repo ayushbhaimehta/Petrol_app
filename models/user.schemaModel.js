@@ -1,13 +1,16 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const Logger = require('../logger/logger');
+const log = new Logger('User_SchemaModel');
 const bcrypt = require('bcrypt');
+
 
 const registerInputUserSchemaModel = {
     firstname: Joi.string(),
     lastname: Joi.string(),
-    username: Joi.string(),
-    password: Joi.string(),
-    phoneNo: Joi.string(),
+    username: Joi.string().required(),
+    password: Joi.string().min(8).required(),
+    phoneNo: Joi.string().max(10).required(),
     address: {
         firstline: Joi.string(),
         secondline: Joi.string(),
@@ -16,6 +19,7 @@ const registerInputUserSchemaModel = {
         pin: Joi.string()
     },
 }
+
 
 const mongoUserSchema = new mongoose.Schema({
     firstname: String,
@@ -31,6 +35,7 @@ const mongoUserSchema = new mongoose.Schema({
         pin: String
     }
 });
+
 mongoUserSchema.methods.encryptPassword = function () {
     return bcrypt.hashSync(this.password, 10, (err) => {
         if (err) {
@@ -40,6 +45,6 @@ mongoUserSchema.methods.encryptPassword = function () {
 }
 
 module.exports = {
-    mongoUserSchema,
-    registerInputUserSchemaModel
+    registerInputUserSchemaModel,
+    mongoUserSchema
 }

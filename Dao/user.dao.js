@@ -1,22 +1,31 @@
+const Logger = require('../logger/logger');
+const log = new Logger('User_Dao');
 const mongoose = require('mongoose');
-const userSchema = require('../models/user.schemaModel');
+const userSchema = require('../models/user.schemaModel').mongoUserSchema;
 const UserModel = mongoose.model('User', userSchema);
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const config = require('config');
 
-const dbUrl = config.get('mongodb-config.protocol') + config.get('mongodb-config.host') + config.get('mongodb-config.port') + config.get('mongodb-config.db');
-mongoose.connect(dbUrl, {})
-    .then(log.info('connected to mongo database....'))
-    .catch(err => log.error('unable to connect, please check your connection....' + err));
+const dbUrl = "mongodb+srv://ayush:ayush@mctservertests.4w9lbwd.mongodb.net/";
+
+try {
+    mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
+        .then(log.info('connected to mongo database....'));
+} catch (error) {
+    log.error('unable to connect, please check your connection....' + error)
+}
+
 
 //I have included this for dev puprose wil remember to comment it out before testing and final deployment
-mongoose.connection.dropCollection('users', err => { if (err) log.error('Unable to drop user collections: ' + err) });
+// mongoose.connection.dropCollection('users', err => { if (err) log.error('Unable to drop user collections: ' + err) });
 
-async function registerNewUser(userObj, response) {
+
+async function resgisterNewUser(userObj, response) {
     let newUser = new UserModel({
         firstname: userObj.firstname,
         lastname: userObj.lastname,
+        emailId: userObj.emailId,
+        dateOfBirth: new Date(userObj.dateOfBirth),
         username: userObj.username,
         password: userObj.password,
         phoneNo: userObj.phoneNo,
@@ -33,12 +42,15 @@ async function registerNewUser(userObj, response) {
 
     await newUser.save((err, result) => {
         if (err) {
+            log.error(`Error in registering new user with username ${userObj.username}: ` + err);
             return response.status(400).send({
-                messageCode: new String(err.errmsg),
-                message: 'Username' + userObj.username + 'already exists.'
+                messageCode: new String(err.errmsg).split(" ")[0],
+                message: 'Username ' + userObj.username + ' already exists.'
             });
         };
+        log.info(result.username + ' has been registered');
         return response.send({
+            messageCode: 'USRR',
             message: 'You have been registered successfully.',
             username: result.username
         });
@@ -46,5 +58,5 @@ async function registerNewUser(userObj, response) {
 }
 
 module.exports = {
-    registerNewUser
+    resgisterNewUser,
 }
