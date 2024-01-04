@@ -21,6 +21,28 @@ try {
 // mongoose.connection.dropCollection('users', err => { if (err) log.error('Unable to drop user collections: ' + err) });
 
 
+async function getByUsername(loginInfo, response) {
+    const username = loginInfo;
+
+    await UserModel.findOne({ username: username }, (err, res) => {
+        if (err || !res) {
+            log.error(`Error in finding user with username ${username}` + err);
+            return response.status(404).send({
+                username: username,
+                message: 'No user with username ' + username
+            });
+        }
+
+        log.info(`Foudn a user with data ${res.username}`);
+        return response.status(200).send({
+            // username: username,
+            phoneNo: res.phoneNo,
+            result: res,
+            message: 'Found a user with username ' + username
+        })
+    })
+}
+
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;
     const password = loginInfo.password;
@@ -94,5 +116,6 @@ async function resgisterNewUser(userObj, response) {
 
 module.exports = {
     resgisterNewUser,
-    validateLoginUser
+    validateLoginUser,
+    getByUsername
 }

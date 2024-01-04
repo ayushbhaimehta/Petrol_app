@@ -17,6 +17,7 @@ async function registerNewUser(req, res) {
 }
 
 async function loginController(req, res) {
+    // console.log({ req });
     let loginInfo = req.body;
     let { error } = userValidator.validateLoginUserSchema(loginInfo);
     if (isNotValidSchema(error, res)) return;
@@ -25,6 +26,21 @@ async function loginController(req, res) {
         return response;
     } catch (error) {
         log.error(`Error in login for username ${loginInfo.username}: ` + err);
+    }
+}
+
+async function getByUsernameController(req, res) {
+    console.log({ req });
+    const loginInfo = req.params.username;
+    console.log(loginInfo);
+    let { err } = userValidator.validateGetUsernameSchema(loginInfo, res);
+    console.log(" checkpoint");
+    if (isNotValidSchema(err, res)) return;
+    try {
+        const response = await userDao.getByUsername(loginInfo, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in getting userdata by this username${loginInfo.username} ` + error)
     }
 }
 
@@ -41,5 +57,6 @@ function isNotValidSchema(error, res) {
 
 module.exports = {
     registerNewUser,
-    loginController
+    loginController,
+    getByUsernameController
 };

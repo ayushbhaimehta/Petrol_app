@@ -4,7 +4,6 @@ const Logger = require('../logger/logger');
 const log = new Logger('User_SchemaModel');
 const bcrypt = require('bcrypt');
 
-
 const registerInputUserSchemaModel = {
     firstname: Joi.string(),
     lastname: Joi.string(),
@@ -25,6 +24,10 @@ const loginSchemaModel = {
     password: Joi.string().required()
 }
 
+const validateGetUsernameSchema = {
+    username: Joi.string().required()
+}
+
 const mongoUserSchema = new mongoose.Schema({
     firstname: String,
     lastname: String,
@@ -40,6 +43,10 @@ const mongoUserSchema = new mongoose.Schema({
     }
 });
 
+const getByUsernameSchema = {
+    username: Joi.string().required()
+}
+
 mongoUserSchema.methods.encryptPassword = function () {
     return bcrypt.hashSync(this.password, 10, (err) => {
         if (err) {
@@ -51,5 +58,7 @@ mongoUserSchema.methods.encryptPassword = function () {
 module.exports = {
     registerInputUserSchemaModel,
     mongoUserSchema,
-    loginSchemaModel
+    loginSchemaModel,
+    validateGetUsernameSchema,
+    getByUsernameSchema
 }
