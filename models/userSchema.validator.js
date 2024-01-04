@@ -5,6 +5,11 @@ const validateNewUserSchema = (newUser) => {
     return Joi.validate(newUser, userSchemaModel.registerInputUserSchemaModel);
 }
 
+const validateLoginUserSchema = (user) => {
+    return Joi.validate(user, userSchemaModel.loginSchemaModel);
+}
+
 module.exports = {
-    validateNewUserSchema
+    validateNewUserSchema,
+    validateLoginUserSchema
 }

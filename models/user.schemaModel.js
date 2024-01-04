@@ -20,6 +20,10 @@ const registerInputUserSchemaModel = {
     },
 }
 
+const loginSchemaModel = {
+    username: Joi.string().required(),
+    password: Joi.string().required()
+}
 
 const mongoUserSchema = new mongoose.Schema({
     firstname: String,
@@ -46,5 +50,6 @@ mongoUserSchema.methods.encryptPassword = function () {
 
 module.exports = {
     registerInputUserSchemaModel,
-    mongoUserSchema
+    mongoUserSchema,
+    loginSchemaModel
 }

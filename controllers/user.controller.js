@@ -8,9 +8,24 @@ async function registerNewUser(req, res) {
     let userObj = req.body;
     let { error } = userValidator.validateNewUserSchema(userObj);
     if (isNotValidSchema(error, res)) return;
-    userDao.resgisterNewUser(userObj, res)
-        .then()
-        .catch((err) => log.error(`Error in registering new user with username ${userObj.username}: ` + err));
+    try {
+        const response = await userDao.resgisterNewUser(userObj, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in registering new user with username ${userObj.username}: ` + err);
+    }
+}
+
+async function loginController(req, res) {
+    let loginInfo = req.body;
+    let { error } = userValidator.validateLoginUserSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const response = await userDao.validateLoginUser(loginInfo, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in login for username ${loginInfo.username}: ` + err);
+    }
 }
 
 function isNotValidSchema(error, res) {
@@ -25,5 +40,6 @@ function isNotValidSchema(error, res) {
 }
 
 module.exports = {
-    registerNewUser
+    registerNewUser,
+    loginController
 };
