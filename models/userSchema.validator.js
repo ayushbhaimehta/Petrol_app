@@ -14,6 +14,11 @@ const validateGetUsernameSchema = (username) => {
     return Joi.validate(username, userSchemaModel.getByUsernameSchema);
 }
 
+const validateGetByPhoneNo = (phoneNo) => {
+    console.log("Checkker");
+    return Joi.validate(phoneNo, userSchemaModel.getByPhoneNoSchema);
+}
+
 module.exports = {
     validateNewUserSchema,
     validateLoginUserSchema,

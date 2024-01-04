@@ -78,6 +78,10 @@ async function validateLoginUser(loginInfo, response) {
     });
 }
 
+async function getByPhoneNo(loginInfo, res) {
+
+}
+
 async function resgisterNewUser(userObj, response) {
     let newUser = new UserModel({
         firstname: userObj.firstname,
@@ -117,5 +121,6 @@ async function resgisterNewUser(userObj, response) {
 module.exports = {
     resgisterNewUser,
     validateLoginUser,
-    getByUsername
+    getByUsername,
+    getByPhoneNo
 }

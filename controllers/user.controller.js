@@ -29,6 +29,18 @@ async function loginController(req, res) {
     }
 }
 
+async function getByPhoneNoController(req, res) {
+    const loginInfo = req.body;
+    const err = userValidator.validateGetByPhoneNo(loginInfo, res);
+    if (isNotValidSchema(err, res)) return;
+    try {
+        const response = await userDao.getByPhoneNo(loginInfo, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in getting userdata by this phone No ${loginInfo.phoneNo}`)
+    }
+}
+
 async function getByUsernameController(req, res) {
     console.log({ req });
     const loginInfo = req.params.username;
@@ -58,5 +70,6 @@ function isNotValidSchema(error, res) {
 module.exports = {
     registerNewUser,
     loginController,
-    getByUsernameController
+    getByUsernameController,
+    getByPhoneNoController
 };

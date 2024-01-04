@@ -43,6 +43,10 @@ const mongoUserSchema = new mongoose.Schema({
     }
 });
 
+const getByPhoneNoSchema = {
+    phoneNo: Joi.string().required().max(10).min(10)
+}
+
 const getByUsernameSchema = {
     username: Joi.string().required()
 }
@@ -60,5 +64,6 @@ module.exports = {
     mongoUserSchema,
     loginSchemaModel,
     validateGetUsernameSchema,
-    getByUsernameSchema
+    getByUsernameSchema,
+    getByPhoneNoSchema
 }
