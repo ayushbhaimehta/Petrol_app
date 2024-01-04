@@ -51,6 +51,10 @@ const getByUsernameSchema = {
     username: Joi.string().required()
 }
 
+const updatePhoneSchemaModel = {
+    phoneNo: Joi.string().required().max(10).min(10)
+}
+
 mongoUserSchema.methods.encryptPassword = function () {
     return bcrypt.hashSync(this.password, 10, (err) => {
         if (err) {
@@ -65,5 +69,6 @@ module.exports = {
     loginSchemaModel,
     validateGetUsernameSchema,
     getByUsernameSchema,
-    getByPhoneNoSchema
+    getByPhoneNoSchema,
+    updatePhoneSchemaModel
 }

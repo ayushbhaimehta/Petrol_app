@@ -43,6 +43,20 @@ async function getByPhoneNoController(req, res) {
     }
 }
 
+async function updatePhoneController(req, res) {
+    const loginInfo = req.body;
+    console.log(loginInfo);
+    let { err } = userValidator.ValidatorUpdatePhoneSchema(loginInfo, res);
+    if (isNotValidSchema(err, res)) return;
+    try {
+        console.log("checkpoint2");
+        const response = await userDao.updatePhoneNo(loginInfo, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in getting data for phone number ${loginInfo.phoneNo}` + error)
+    }
+}
+
 async function getByUsernameController(req, res) {
     console.log({ req });
     const loginInfo = req.params.username;
@@ -73,5 +87,6 @@ module.exports = {
     registerNewUser,
     loginController,
     getByUsernameController,
-    getByPhoneNoController
+    getByPhoneNoController,
+    updatePhoneController
 };

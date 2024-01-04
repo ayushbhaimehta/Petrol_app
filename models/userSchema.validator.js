@@ -14,6 +14,11 @@ const validateGetUsernameSchema = (username) => {
     return Joi.validate(username, userSchemaModel.getByUsernameSchema);
 }
 
+const ValidatorUpdatePhoneSchema = (payload) => {
+    console.log("flagger");
+    return Joi.validate(payload, userSchemaModel.updatePhoneSchemaModel)
+}
+
 const validateGetByPhoneNo = (phoneNo) => {
     console.log("Checkker");
     return Joi.validate(phoneNo, userSchemaModel.getByPhoneNoSchema);
@@ -23,5 +28,6 @@ module.exports = {
     validateNewUserSchema,
     validateLoginUserSchema,
     validateGetUsernameSchema,
-    validateGetByPhoneNo
+    validateGetByPhoneNo,
+    ValidatorUpdatePhoneSchema
 }
