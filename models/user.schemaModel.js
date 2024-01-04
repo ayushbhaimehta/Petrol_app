@@ -52,7 +52,8 @@ const getByUsernameSchema = {
 }
 
 const updatePhoneSchemaModel = {
-    phoneNo: Joi.string().required().max(10).min(10)
+    phoneNo: Joi.string().required().max(10).min(10),
+    newPhoneNo: Joi.string().required().max(10).min(10)
 }
 
 mongoUserSchema.methods.encryptPassword = function () {

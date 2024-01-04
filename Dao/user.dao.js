@@ -63,6 +63,27 @@ async function getByPhoneNo(loginInfo, res) {
     })
 }
 
+async function updatePhoneNo(loginInfo, res) {
+    const phoneNo = loginInfo.phoneNo;
+    const newPhoneNo = loginInfo.newPhoneNo;
+    console.log({ phoneNo }, "moment of truth flag");
+    await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { phoneNo: newPhoneNo }, (err, response) => {
+        console.log("updatePoint");
+        if (err || !response) {
+            log.error(`Error while updating the phone No ${phoneNo}`);
+            return res.status(404).send({
+                message: 'Error in updating the phoneNo',
+                phoneNo: phoneNo
+            })
+        }
+        log.info(`Successfully updated the phoneNo from ${phoneNo} to ${newPhoneNo}`);
+        return res.status(200).send({
+            message: `updated the phoneNo from ${phoneNo} to ${newPhoneNo}`,
+            phoneNo: newPhoneNo
+        })
+    });
+}
+
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;
     const password = loginInfo.password;
@@ -138,5 +159,6 @@ module.exports = {
     resgisterNewUser,
     validateLoginUser,
     getByUsername,
-    getByPhoneNo
+    getByPhoneNo,
+    updatePhoneNo
 }
