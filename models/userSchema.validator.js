@@ -22,5 +22,6 @@ const validateGetByPhoneNo = (phoneNo) => {
 module.exports = {
     validateNewUserSchema,
     validateLoginUserSchema,
-    validateGetUsernameSchema
+    validateGetUsernameSchema,
+    validateGetByPhoneNo
 }

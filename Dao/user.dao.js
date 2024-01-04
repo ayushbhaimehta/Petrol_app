@@ -43,6 +43,26 @@ async function getByUsername(loginInfo, response) {
     })
 }
 
+async function getByPhoneNo(loginInfo, res) {
+    const phoneNo = loginInfo;
+    console.log({ phoneNo });
+    await UserModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+        console.log("checkpoint3");
+        if (err || !response) {
+            log.error(`Error in finding phoneNo ${phoneNo}` + err);
+            return res.status(404).send({
+                phoneNo: phoneNo,
+                message: 'No user with this ' + phoneNo + 'found'
+            })
+        }
+        log.info(`Found a user with phone No ${phoneNo}`);
+        return res.status(200).send({
+            result: response,
+            message: `FOund a user with phoneno ${phoneNo}`
+        })
+    })
+}
+
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;
     const password = loginInfo.password;
@@ -76,10 +96,6 @@ async function validateLoginUser(loginInfo, response) {
             });
         }
     });
-}
-
-async function getByPhoneNo(loginInfo, res) {
-
 }
 
 async function resgisterNewUser(userObj, response) {

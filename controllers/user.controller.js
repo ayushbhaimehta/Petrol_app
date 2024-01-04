@@ -30,14 +30,16 @@ async function loginController(req, res) {
 }
 
 async function getByPhoneNoController(req, res) {
-    const loginInfo = req.body;
-    const err = userValidator.validateGetByPhoneNo(loginInfo, res);
+    const loginInfo = req.params.phoneno;
+    console.log(loginInfo);
+    let { err } = userValidator.validateGetByPhoneNo(loginInfo, res);
     if (isNotValidSchema(err, res)) return;
     try {
+        console.log("checkpoint2");
         const response = await userDao.getByPhoneNo(loginInfo, res);
         return response;
     } catch (error) {
-        log.error(`Error in getting userdata by this phone No ${loginInfo.phoneNo}`)
+        log.error(`Error in getting userdata by this phone No ${loginInfo.phoneno}` + error);
     }
 }
 
