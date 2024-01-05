@@ -3,6 +3,10 @@ const userValidator = require('../models/userSchema.validator');
 const userDao = require('../Dao/user.dao');
 const Logger = require('../logger/logger');
 const log = new Logger('User_Controller');
+const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
+const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
+const client = require("twilio")(accountSid, authToken);
+const readline = require("readline")
 
 async function registerNewUser(req, res) {
     let userObj = req.body;
@@ -13,6 +17,49 @@ async function registerNewUser(req, res) {
         return response;
     } catch (error) {
         log.error(`Error in registering new user with username ${userObj.username}: ` + err);
+    }
+}
+
+const verifySid = "VA3b02c8ea4c1783a75cbdc761cc5199b2";
+// client.verify.v2
+//     .services(verifySid)
+//     .verifications.create({ to: "+917879038278", channel: "sms" })
+//     .then((verification) => console.log(verification.status, "flagger"))
+//     .then(() => {
+//         readline.createInterface({
+//             input: process.stdin,
+//             output: process.stdout,
+//         });
+//         readline.question("Please enter the OTP:", (otpCode) => {
+//             client.verify.v2
+//                 .services(verifySid)
+//                 .verificationChecks.create({ to: "+917879038278", code: otpCode })
+//                 .then((verification_check) => console.log(verification_check.status))
+//                 .then(() => readline.close());
+//         });
+//         // console.log({ readline });
+//     });
+async function sendOtpController(req, res) {
+    const loginInfo = req.body;
+    let { error } = userValidator.validateSendOtpSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        // send otp service
+        const otpResponse = await client.verify.v2
+            .services(verifySid)
+            .verifications.create({
+                to: `+${loginInfo.countryCode}${loginInfo.phoneNo}`,
+                channel: 'sms',
+            })
+        console.log(otpResponse);
+        log.info(`Sucessfully sent the otp to phoneNo ${loginInfo.phoneNo}`);
+        res.status(200).send({
+            message: 'Otp Sent to phoneNo' + loginInfo.phoneNo,
+            result: otpResponse
+        })
+    } catch (error) {
+        // error in sending the otp using twilio
+        log.error(`Error in sending the otp using twilio for phone No ${loginInfo.phoneNo}`)
     }
 }
 
@@ -102,5 +149,6 @@ module.exports = {
     getByUsernameController,
     getByPhoneNoController,
     updatePhoneController,
-    updateAddress
+    updateAddress,
+    sendOtpController
 };

@@ -43,6 +43,18 @@ async function getByUsername(loginInfo, response) {
     })
 }
 
+// Download the helper library from https://www.twilio.com/docs/node/install
+// Set environment variables for your credentials
+// Read more at http://twil.io/secure
+
+
+
+
+async function otpService(req, res) {
+
+}
+
+
 async function getByPhoneNo(loginInfo, res) {
     const phoneNo = loginInfo;
     console.log({ phoneNo });
@@ -182,5 +194,6 @@ module.exports = {
     getByUsername,
     getByPhoneNo,
     updatePhoneNo,
-    updateAddressDao
+    updateAddressDao,
+    otpService
 }
