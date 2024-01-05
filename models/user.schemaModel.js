@@ -5,19 +5,38 @@ const log = new Logger('User_SchemaModel');
 const bcrypt = require('bcrypt');
 
 const registerInputUserSchemaModel = {
-    firstname: Joi.string(),
-    lastname: Joi.string(),
-    username: Joi.string().required(),
-    password: Joi.string().min(8).required(),
+    name: Joi.string(),
+    username: Joi.string(),
     phoneNo: Joi.string().max(10).required(),
-    address: {
-        firstline: Joi.string(),
-        secondline: Joi.string(),
-        city: Joi.string(),
-        country: Joi.string(),
-        pin: Joi.string()
-    },
+    address: Joi.array().items(
+        Joi.object({
+            name: Joi.string(),
+            phoneNo: Joi.string(),
+            myself: Joi.boolean(),
+            saveas: Joi.string(),
+            fulladdr: Joi.string(),
+            vehicle: Joi.string(),
+            vnumber: Joi.string().max(4).min(4)
+        })
+    )
 }
+
+const mongoUserSchema = new mongoose.Schema({
+    name: String,
+    username: String,
+    phoneNo: String,
+    address: [
+        {
+            name: String,
+            phoneNo: String,
+            myself: Boolean,
+            saveas: String,
+            fulladdr: String,
+            vehicle: String,
+            vnumber: String,
+        }
+    ]
+});
 
 const loginSchemaModel = {
     username: Joi.string().required(),
@@ -27,21 +46,6 @@ const loginSchemaModel = {
 const validateGetUsernameSchema = {
     username: Joi.string().required()
 }
-
-const mongoUserSchema = new mongoose.Schema({
-    firstname: String,
-    lastname: String,
-    username: { type: String, unique: true },
-    password: String,
-    phoneNo: String,
-    address: {
-        firstline: String,
-        secondline: String,
-        city: String,
-        country: String,
-        pin: String
-    }
-});
 
 const getByPhoneNoSchema = {
     phoneNo: Joi.string().required().max(10).min(10)
@@ -59,11 +63,13 @@ const updatePhoneSchemaModel = {
 const updateAddressSchemaModel = {
     username: Joi.string(),
     address: {
-        firstline: Joi.string(),
-        secondline: Joi.string(),
-        city: Joi.string(),
-        country: Joi.string(),
-        pin: Joi.string()
+        name: Joi.string(),
+        phoneNo: Joi.string(),
+        myself: Joi.boolean(),
+        saveas: Joi.string(),
+        fulladdr: Joi.string(),
+        vehicle: Joi.string(),
+        vnumber: Joi.string().max(4).min(4)
     }
 }
 
@@ -85,6 +91,7 @@ mongoUserSchema.methods.encryptPassword = function () {
         }
     });
 }
+const UserModel = mongoose.model('User', mongoUserSchema);
 
 module.exports = {
     registerInputUserSchemaModel,
@@ -96,5 +103,6 @@ module.exports = {
     updatePhoneSchemaModel,
     updateAddressSchemaModel,
     sendOtpSchemaModel,
-    verifyOtpSchemaModel
+    verifyOtpSchemaModel,
+    UserModel
 }

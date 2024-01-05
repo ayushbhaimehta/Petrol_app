@@ -6,7 +6,7 @@ const log = new Logger('User_Controller');
 const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
 const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
 const client = require("twilio")(accountSid, authToken);
-const readline = require("readline");
+// const readline = require("readline");
 
 async function registerNewUser(req, res) {
     let userObj = req.body;
@@ -122,15 +122,16 @@ async function verifyOtpController(req, res) {
 
 async function loginController(req, res) {
     // console.log({ req });
-    let loginInfo = req.body;
-    let { error } = userValidator.validateLoginUserSchema(loginInfo);
-    if (isNotValidSchema(error, res)) return;
-    try {
-        const response = await userDao.validateLoginUser(loginInfo, res);
-        return response;
-    } catch (error) {
-        log.error(`Error in login for username ${loginInfo.username}: ` + err);
-    }
+    // let loginInfo = req.body;
+    // let { error } = userValidator.validateLoginUserSchema(loginInfo);
+    // if (isNotValidSchema(error, res)) return;
+    // try {
+
+    //     // const response = await userDao.validateLoginUser(loginInfo, res);
+    //     // return response;
+    // } catch (error) {
+    //     log.error(`Error in login for username ${loginInfo.username}: ` + err);
+    // }
 }
 
 async function getByPhoneNoController(req, res) {

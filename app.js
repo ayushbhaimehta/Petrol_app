@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 var cors = require('cors')
+const mongoose = require('mongoose');
+
 require('dotenv').config()
 
 
@@ -9,6 +11,7 @@ require('dotenv').config()
 // set env
 const environment = process.env.NODE_ENV || "development";
 console.log({ environment });
+const dbUrl = "mongodb+srv://ayush:ayush@cluster0.rajkpzr.mongodb.net/";
 
 // Whitelisdty
 const whitelist = [
@@ -65,4 +68,10 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`Application running in ${environment} environment, listening to port ${port}....`);
+    try {
+        mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+            .then(console.log('connected to mongo database....'));
+    } catch (error) {
+        console.error('unable to connect, please check your connection....' + error)
+    }
 });

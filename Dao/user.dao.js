@@ -1,20 +1,11 @@
 const Logger = require('../logger/logger');
 const log = new Logger('User_Dao');
-const mongoose = require('mongoose');
-const userSchema = require('../models/user.schemaModel').mongoUserSchema;
-const UserModel = mongoose.model('User', userSchema);
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const { UserModel } = require('../models/user.schemaModel')
+// const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
 
-const dbUrl = "mongodb+srv://ayush:ayush@mctservertests.4w9lbwd.mongodb.net/";
 const secretKey = "12345"
 
-try {
-    mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-        .then(log.info('connected to mongo database....'));
-} catch (error) {
-    log.error('unable to connect, please check your connection....' + error)
-}
 
 
 //I have included this for dev puprose wil remember to comment it out before testing and final deployment
@@ -41,17 +32,6 @@ async function getByUsername(loginInfo, response) {
             message: 'Found a user with username ' + username
         })
     })
-}
-
-// Download the helper library from https://www.twilio.com/docs/node/install
-// Set environment variables for your credentials
-// Read more at http://twil.io/secure
-
-
-
-
-async function otpService(req, res) {
-
 }
 
 
@@ -119,7 +99,6 @@ async function updatePhoneNo(loginInfo, res) {
 
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;
-    const password = loginInfo.password;
     await UserModel.findOne({ username: username }, (err, result) => {
         if (err || !result) {
             log.error(`Error in finding user with username ${username}:` + err);
@@ -128,62 +107,62 @@ async function validateLoginUser(loginInfo, response) {
                 message: 'No user with username' + username
             });
         }
-        const dbPassword = result.password;
+        // const dbPassword = result.password;
 
-        if (result && bcrypt.compareSync(password, dbPassword)) {
-            log.info(username + ' has been validated and loggedin');
-            const jwtToken = jwt.sign({
-                exp: Math.floor(Date.now() / 1000) + (60),
-                username: username,
-            }, secretKey);
+        // if (result && bcrypt.compareSync(password, dbPassword)) {
+        //     log.info(username + ' has been validated and loggedin');
+        //     const jwtToken = jwt.sign({
+        //         exp: Math.floor(Date.now() / 1000) + (60),
+        //         username: username,
+        //     }, secretKey);
 
-            return response.header('x-auth-token', jwtToken).send({
-                username: username,
-                message: 'Valid credential.'
-            });
-        }
-        else {
-            log.warn('Unable to validate for' + username);
-            return response.status(404).send({
-                username: username,
-                message: 'password wrong.'
-            });
-        }
+        //     return response.header('x-auth-token', jwtToken).send({
+        //         username: username,
+        //         message: 'Valid credential.'
+        //     });
+        // }
+        // else {
+        //     log.warn('Unable to validate for' + username);
+        //     return response.status(404).send({
+        //         username: username,
+        //         message: 'password wrong.'
+        //     });
+        // }
     });
 }
 
 async function resgisterNewUser(userObj, response) {
+    console.log({ userObj });
+    console.log(userObj.address[0]);
+    const ind = userObj.address.length;
+    console.log(ind, "array size");
     let newUser = new UserModel({
-        firstname: userObj.firstname,
-        lastname: userObj.lastname,
-        emailId: userObj.emailId,
-        dateOfBirth: new Date(userObj.dateOfBirth),
+        name: userObj.name,
         username: userObj.username,
-        password: userObj.password,
         phoneNo: userObj.phoneNo,
-        address: {
-            firstline: userObj.address.firstline,
-            secondline: userObj.address.secondline,
-            city: userObj.address.city,
-            country: userObj.address.country,
-            pin: userObj.address.pin
-        }
+        address: [{
+            name: userObj.address[ind - 1].name,
+            phoneNo: userObj.address[ind - 1].phoneNo,
+            myself: userObj.address[ind - 1].myself,
+            saveas: userObj.address[ind - 1].saveas,
+            fulladdr: userObj.address[ind - 1].fulladdr,
+            vehicle: userObj.address[ind - 1].vehicle,
+            vnumber: userObj.address[ind - 1].vnumber
+        }]
     });
-
-    newUser.password = newUser.encryptPassword();
 
     await newUser.save((err, result) => {
         if (err) {
-            log.error(`Error in registering new user with username ${userObj.username}: ` + err);
-            return response.status(400).send({
+            log.error(`Error in registering new user with username ${userObj.phoneNo}: ` + err);
+            return response.status(202).send({
                 messageCode: new String(err.errmsg).split(" ")[0],
-                message: 'Username ' + userObj.username + ' already exists.'
+                message: 'phoneNo ' + userObj.phoneNo + ' already exists.'
             });
         };
-        log.info(result.username + ' has been registered');
+        log.info(result.phoneNo + ' has been registered');
         return response.send({
             message: 'You have been registered successfully.',
-            username: result.username
+            phoneNo: result.phoneNo
         });
     });
 }
@@ -194,6 +173,5 @@ module.exports = {
     getByUsername,
     getByPhoneNo,
     updatePhoneNo,
-    updateAddressDao,
-    otpService
+    updateAddressDao
 }
