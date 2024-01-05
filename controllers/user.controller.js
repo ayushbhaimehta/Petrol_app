@@ -16,7 +16,7 @@ async function registerNewUser(req, res) {
         const response = await userDao.resgisterNewUser(userObj, res);
         return response;
     } catch (error) {
-        log.error(`Error in registering new user with username ${userObj.username}: ` + err);
+        log.error(`Error in registering new user with username ${userObj.username}: ` + error);
     }
 }
 

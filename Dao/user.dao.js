@@ -34,6 +34,54 @@ async function getByUsername(loginInfo, response) {
     })
 }
 
+async function resgisterNewUser(userObj, response) {
+    console.log({ userObj });
+    console.log(userObj.address[0]);
+    const ind = userObj.address.length;
+    console.log(ind, "array size");
+    const phoneNo = userObj.phoneNo;
+    console.log(phoneNo);
+    const existingUser = await UserModel.findOne({ phoneNo: phoneNo });
+    if (existingUser) {
+        log.info(`User already found. LoggedIn successfully`);
+        console.log({ existingUser });
+        return response.status(203).send({
+            message: 'You have successfully loggedIn',
+            // result: existingUser
+        });
+    }
+
+    let newUser = new UserModel({
+        name: userObj.name,
+        username: userObj.username,
+        phoneNo: userObj.phoneNo,
+        address: [{
+            name: userObj.address[ind - 1].name,
+            phoneNo: userObj.address[ind - 1].phoneNo,
+            myself: userObj.address[ind - 1].myself,
+            saveas: userObj.address[ind - 1].saveas,
+            fulladdr: userObj.address[ind - 1].fulladdr,
+            vehicle: userObj.address[ind - 1].vehicle,
+            vnumber: userObj.address[ind - 1].vnumber
+        }]
+    });
+
+    const result = await newUser.save((err, result) => {
+        if (err) {
+            log.error(`Error in registering new user with username ${userObj.phoneNo}: ` + err);
+            return response.status(202).send({
+                messageCode: new String(err.errmsg).split(" ")[0],
+                message: 'phoneNo ' + userObj.phoneNo + ' already exists.'
+            });
+        };
+        log.info(result.phoneNo + ' has been registered');
+        return response.status(200).send({
+            message: 'You have been registered successfully.',
+            phoneNo: result.phoneNo
+        });
+    });
+    return result;
+}
 
 async function getByPhoneNo(loginInfo, res) {
     const phoneNo = loginInfo;
@@ -94,9 +142,9 @@ async function updatePhoneNo(loginInfo, res) {
             message: `updated the phoneNo from ${phoneNo} to ${newPhoneNo}`,
             phoneNo: newPhoneNo
         })
+
     });
 }
-
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;
     await UserModel.findOne({ username: username }, (err, result) => {
@@ -131,41 +179,7 @@ async function validateLoginUser(loginInfo, response) {
     });
 }
 
-async function resgisterNewUser(userObj, response) {
-    console.log({ userObj });
-    console.log(userObj.address[0]);
-    const ind = userObj.address.length;
-    console.log(ind, "array size");
-    let newUser = new UserModel({
-        name: userObj.name,
-        username: userObj.username,
-        phoneNo: userObj.phoneNo,
-        address: [{
-            name: userObj.address[ind - 1].name,
-            phoneNo: userObj.address[ind - 1].phoneNo,
-            myself: userObj.address[ind - 1].myself,
-            saveas: userObj.address[ind - 1].saveas,
-            fulladdr: userObj.address[ind - 1].fulladdr,
-            vehicle: userObj.address[ind - 1].vehicle,
-            vnumber: userObj.address[ind - 1].vnumber
-        }]
-    });
 
-    await newUser.save((err, result) => {
-        if (err) {
-            log.error(`Error in registering new user with username ${userObj.phoneNo}: ` + err);
-            return response.status(202).send({
-                messageCode: new String(err.errmsg).split(" ")[0],
-                message: 'phoneNo ' + userObj.phoneNo + ' already exists.'
-            });
-        };
-        log.info(result.phoneNo + ' has been registered');
-        return response.send({
-            message: 'You have been registered successfully.',
-            phoneNo: result.phoneNo
-        });
-    });
-}
 
 module.exports = {
     resgisterNewUser,
