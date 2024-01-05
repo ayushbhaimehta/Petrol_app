@@ -74,7 +74,16 @@ const updateAddressSchemaModel = {
 }
 
 const addAddressSchemaModel = {
-
+    phoneNo: Joi.string().required().max(10).min(10),
+    address: {
+        name: Joi.string(),
+        phoneNo: Joi.string(),
+        myself: Joi.boolean(),
+        saveas: Joi.string(),
+        fulladdr: Joi.string(),
+        vehicle: Joi.string(),
+        vnumber: Joi.string().max(4).min(4)
+    }
 }
 
 const sendOtpSchemaModel = {

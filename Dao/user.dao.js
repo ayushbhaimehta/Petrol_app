@@ -103,6 +103,10 @@ async function getByPhoneNo(loginInfo, res) {
     })
 }
 
+async function getAddress(phoneNo, res) {
+    return await UserModel.findOne({ phoneNo: phoneNo });
+}
+
 async function updateAddressDao(loginInfo, res) {
     const address = loginInfo.address;
     const phoneNo = loginInfo.phoneNo;
@@ -124,7 +128,35 @@ async function updateAddressDao(loginInfo, res) {
 }
 
 async function addAddressDao(loginInfo, res) {
+    const phoneNo = loginInfo.phoneNo;
+    const adr = loginInfo.address;
+    const payload = await getAddress(phoneNo, res);
+    // const adrArray = payload.address;
+    payload.address.push(adr);
+    console.log(payload);
+    // console.log(adrArray, "Flagger");
 
+    // const result = await UserModel.find
+    // console.log(adrArray.address[0].name);
+    // console.log(Array.isArray(adrArray.address));
+    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { address: payload.address }, (err, response) => {
+        console.log("updatePoint");
+        if (err || !response) {
+            log.error(`Error in adding address` + err);
+            return res.status(400).send({
+                message: 'Error in adding new address'
+            })
+        }
+        log.info(`Sucessfully added new addres in the addres array to phoneNo ${phoneNo}`);
+        // console.log(res);
+        return res.status(200).send({
+            message: 'Successfully added new address',
+            // result: res.body.address
+            // 
+        })
+    })
+    return result;
+    // return res.send({ message: 'testing phase' })
 }
 
 async function updatePhoneNo(loginInfo, res) {

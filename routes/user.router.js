@@ -19,6 +19,6 @@ userRouter.post('/updatephone', updatePhoneController);//working
 userRouter.post('/updateAddress', updateAddress);//working
 userRouter.post('/addAddress', addAdressController);
 userRouter.post('/sendotp', sendOtpController);//working
-userRouter.post('/verifyOtp', verifyOtpController);//wporking
+userRouter.post('/verifyOtp', verifyOtpController);//working
 
 module.exports = userRouter;
