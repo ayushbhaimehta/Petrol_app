@@ -61,7 +61,7 @@ const updatePhoneSchemaModel = {
 }
 
 const updateAddressSchemaModel = {
-    username: Joi.string(),
+    phoneNo: Joi.string().required().max(10).min(10),
     address: {
         name: Joi.string(),
         phoneNo: Joi.string(),
@@ -71,6 +71,10 @@ const updateAddressSchemaModel = {
         vehicle: Joi.string(),
         vnumber: Joi.string().max(4).min(4)
     }
+}
+
+const addAddressSchemaModel = {
+
 }
 
 const sendOtpSchemaModel = {
@@ -104,5 +108,6 @@ module.exports = {
     updateAddressSchemaModel,
     sendOtpSchemaModel,
     verifyOtpSchemaModel,
-    UserModel
+    UserModel,
+    addAddressSchemaModel
 }

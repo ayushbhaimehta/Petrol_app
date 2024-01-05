@@ -1,7 +1,7 @@
 const express = require('express');
 const {
     registerNewUser,
-    loginController,
+    addAdressController,
     getByUsernameController,
     updateAddress,
     updatePhoneController,
@@ -11,13 +11,14 @@ const {
 // const { otpService } = require('../Dao/user.dao')
 const userRouter = express.Router();
 
-userRouter.get('/getbyusername/:username', getByUsernameController);
-userRouter.get('/getbyphoneno/:phoneno', getByPhoneNoController);
-userRouter.post('/register', registerNewUser);
+userRouter.get('/getbyusername/:username', getByUsernameController);//working
+userRouter.get('/getbyphoneno/:phoneno', getByPhoneNoController);//working
+userRouter.post('/register', registerNewUser);//working
 // userRouter.post('/login', loginController);
-userRouter.post('/updatephone', updatePhoneController);
-userRouter.post('/updateAddress', updateAddress);
-userRouter.post('/sendotp', sendOtpController);
-userRouter.post('/verifyOtp', verifyOtpController);
+userRouter.post('/updatephone', updatePhoneController);//working
+userRouter.post('/updateAddress', updateAddress);//working
+userRouter.post('/addAddress', addAdressController);
+userRouter.post('/sendotp', sendOtpController);//working
+userRouter.post('/verifyOtp', verifyOtpController);//wporking
 
 module.exports = userRouter;

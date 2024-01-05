@@ -105,23 +105,26 @@ async function getByPhoneNo(loginInfo, res) {
 
 async function updateAddressDao(loginInfo, res) {
     const address = loginInfo.address;
-    const username = loginInfo.username;
+    const phoneNo = loginInfo.phoneNo;
 
-    await UserModel.findOneAndUpdate({ username: username }, { address, address }, (err, response) => {
+    await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { address, address }, (err, response) => {
         if (err || !response) {
             log.error(`Error in retrieving the data for the username ${username}` + err);
             return res.status(400).send({
                 message: 'Error in updating the address',
-                username: username
+                phoneNo: phoneNo
             })
         }
-
-        log.info(`Found and successfully updated the address for the user ${username} from prev address ${response.address} to new address ${address}`);
+        log.info(`Found and successfully updated the phoneNo for the user ${phoneNo} from prev address ${response.address} to new address ${address}`);
         return res.status(200).send({
             message: `Successfully the address from ${response.address} to new address ${address}`,
             result: response
         })
     })
+}
+
+async function addAddressDao(loginInfo, res) {
+
 }
 
 async function updatePhoneNo(loginInfo, res) {
@@ -187,5 +190,6 @@ module.exports = {
     getByUsername,
     getByPhoneNo,
     updatePhoneNo,
-    updateAddressDao
+    updateAddressDao,
+    addAddressDao
 }

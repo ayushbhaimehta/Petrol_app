@@ -29,6 +29,11 @@ const validateUpdateAddressSchema = (loginInfo) => {
     return Joi.validate(loginInfo, userSchemaModel.updateAddressSchemaModel);
 }
 
+const validateAddaddressSchema = (loginInfo) => {
+    console.log("checkoint 2");
+    return Joi.validate(loginInfo, userSchemaModel.addAddressSchemaModel);
+}
+
 const validateSendOtpSchema = (loginInfo) => {
     console.log("checkpoint 2");
     return Joi.validate(loginInfo, userSchemaModel.sendOtpSchemaModel);
@@ -47,5 +52,6 @@ module.exports = {
     ValidatorUpdatePhoneSchema,
     validateUpdateAddressSchema,
     validateSendOtpSchema,
-    validateVerifyOtpSchema
+    validateVerifyOtpSchema,
+    validateAddaddressSchema
 }

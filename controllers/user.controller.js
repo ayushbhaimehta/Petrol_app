@@ -155,9 +155,23 @@ async function updateAddress(req, res) {
     try {
         console.log("checkpoint 2");
         const response = await userDao.updateAddressDao(loginInfo, res);
+        // log.info(`Successfully updated the address`)
         return response;
     } catch (error) {
         log.error(`Error in finding the user` + error)
+    }
+}
+
+async function addAdressController(req, res) {
+    const loginInfo = req.body;
+    let { err } = userValidator.validateAddaddressSchema(loginInfo, res);
+    if (isNotValidSchema(err, res)) return;
+    try {
+        console.log("checkpoint 1");
+        const result = await userDao.addAddressDao(loginInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in adding new address ` + error)
     }
 }
 
@@ -209,5 +223,6 @@ module.exports = {
     updatePhoneController,
     updateAddress,
     sendOtpController,
-    verifyOtpController
+    verifyOtpController,
+    addAdressController
 };
