@@ -16,7 +16,7 @@ const validateGetUsernameSchema = (username) => {
 
 const ValidatorUpdatePhoneSchema = (payload) => {
     console.log("flagger");
-    return Joi.validate(payload, userSchemaModel.updatePhoneSchemaModel)
+    return Joi.validate(payload, userSchemaModel.updatePhoneSchemaModel);
 }
 
 const validateGetByPhoneNo = (phoneNo) => {
@@ -26,12 +26,17 @@ const validateGetByPhoneNo = (phoneNo) => {
 
 const validateUpdateAddressSchema = (loginInfo) => {
     console.log("flagger");
-    return Joi.validate(loginInfo, userSchemaModel.updateAddressSchemaModel)
+    return Joi.validate(loginInfo, userSchemaModel.updateAddressSchemaModel);
 }
 
 const validateSendOtpSchema = (loginInfo) => {
     console.log("checkpoint 2");
-    return Joi.validate(loginInfo, userSchemaModel.sendOtpSchemaModel)
+    return Joi.validate(loginInfo, userSchemaModel.sendOtpSchemaModel);
+}
+
+const validateVerifyOtpSchema = (loginInfo) => {
+    console.log("checkpoint 2");
+    return Joi.validate(loginInfo, userSchemaModel.verifyOtpSchemaModel);
 }
 
 module.exports = {
@@ -41,5 +46,6 @@ module.exports = {
     validateGetByPhoneNo,
     ValidatorUpdatePhoneSchema,
     validateUpdateAddressSchema,
-    validateSendOtpSchema
+    validateSendOtpSchema,
+    validateVerifyOtpSchema
 }

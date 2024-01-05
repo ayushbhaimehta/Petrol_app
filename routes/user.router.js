@@ -1,5 +1,13 @@
 const express = require('express');
-const { registerNewUser, loginController, getByUsernameController, updateAddress, updatePhoneController, getByPhoneNoController, sendOtpController } = require('../controllers/user.controller')
+const {
+    registerNewUser,
+    loginController,
+    getByUsernameController,
+    updateAddress,
+    updatePhoneController,
+    getByPhoneNoController,
+    sendOtpController,
+    verifyOtpController } = require('../controllers/user.controller')
 // const { otpService } = require('../Dao/user.dao')
 const userRouter = express.Router();
 
@@ -10,6 +18,6 @@ userRouter.post('/login', loginController);
 userRouter.post('/updatephone', updatePhoneController);
 userRouter.post('/updateAddress', updateAddress);
 userRouter.post('/sendotp', sendOtpController);
-// userRouter.post('/verifyOtp', verifyOtpController);
+userRouter.post('/verifyOtp', verifyOtpController);
 
 module.exports = userRouter;

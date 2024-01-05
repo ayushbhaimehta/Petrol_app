@@ -72,6 +72,12 @@ const sendOtpSchemaModel = {
     countryCode: Joi.string().required()
 }
 
+const verifyOtpSchemaModel = {
+    phoneNo: Joi.string().required().min(10).max(10),
+    countryCode: Joi.string().required(),
+    OTP: Joi.string().required().min(6).max(6)
+}
+
 mongoUserSchema.methods.encryptPassword = function () {
     return bcrypt.hashSync(this.password, 10, (err) => {
         if (err) {
@@ -89,5 +95,6 @@ module.exports = {
     getByPhoneNoSchema,
     updatePhoneSchemaModel,
     updateAddressSchemaModel,
-    sendOtpSchemaModel
+    sendOtpSchemaModel,
+    verifyOtpSchemaModel
 }

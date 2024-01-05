@@ -6,7 +6,7 @@ const log = new Logger('User_Controller');
 const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
 const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
 const client = require("twilio")(accountSid, authToken);
-const readline = require("readline")
+const readline = require("readline");
 
 async function registerNewUser(req, res) {
     let userObj = req.body;
@@ -61,6 +61,63 @@ async function sendOtpController(req, res) {
         // error in sending the otp using twilio
         log.error(`Error in sending the otp using twilio for phone No ${loginInfo.phoneNo}`)
     }
+}
+
+async function verifyOtpController(req, res) {
+    const loginInfo = req.body;
+    const otp = loginInfo.OTP;
+    console.log({ loginInfo });
+    let { error } = userValidator.validateVerifyOtpSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const verifiedResponse = await client.verify.v2.services(verifySid)
+            .verificationChecks
+            .create({ to: `${loginInfo.countryCode}${loginInfo.phoneNo}`, code: otp });
+        // .create({ to: loginInfo.phoneNo, code: otp });
+        console.log(verifiedResponse);
+        if (verifiedResponse.status === 'approved') {
+            log.info(`Successfully verified`);
+            res.status(200).send({
+                message: 'Otp verified'
+            })
+        }
+        else {
+            res.status(400).send({
+                message: 'Wrong otp entered'
+            })
+        }
+
+    } catch (error) {
+        log.error(`Error in verifing the otp`);
+        res.status(404).send({
+            message: 'Wrong otp'
+        })
+    }
+
+    // try {
+    //     console.log("abc");
+    //     // const verifiedResponse = await client.verify.v2
+    //     //     .services(verifySid)
+    //     //     .verificationChecks.create({
+    //     //         to: `+917879038278`,
+    //     //         code: loginInfo.OTP,
+    //     //     })
+    //     // console.log(verifiedResponse);
+    //     readline.question("Please enter the OTP:", (otpCode) => {
+    //         client.verify.v2
+    //             .services(verifySid)
+    //             .verificationChecks.create({ to: "+917879038278", code: otpCode })
+    //             .then((verification_check) => console.log(verification_check.status))
+    //             .then(() => readline.close());
+    //     });
+    //     // console.log({ readline });
+
+    // } catch (error) {
+    //     log.error(`Error in verifing the otp`);
+    //     res.status(404).send({
+    //         message: 'Wrong otp'
+    //     })
+    // }
 }
 
 async function loginController(req, res) {
@@ -150,5 +207,6 @@ module.exports = {
     getByPhoneNoController,
     updatePhoneController,
     updateAddress,
-    sendOtpController
+    sendOtpController,
+    verifyOtpController
 };
