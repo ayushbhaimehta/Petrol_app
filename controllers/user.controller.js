@@ -6,6 +6,8 @@ const log = new Logger('User_Controller');
 const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
 const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
 const client = require("twilio")(accountSid, authToken);
+const jwt = require('jsonwebtoken');
+
 // const readline = require("readline");
 
 async function registerNewUser(req, res) {
@@ -21,6 +23,7 @@ async function registerNewUser(req, res) {
 }
 
 const verifySid = "VA3b02c8ea4c1783a75cbdc761cc5199b2";
+const secretKey = "123456789"
 // client.verify.v2
 //     .services(verifySid)
 //     .verifications.create({ to: "+917879038278", channel: "sms" })
@@ -74,11 +77,15 @@ async function verifyOtpController(req, res) {
             .verificationChecks
             .create({ to: `${loginInfo.countryCode}${loginInfo.phoneNo}`, code: otp });
         // .create({ to: loginInfo.phoneNo, code: otp });
-        console.log(verifiedResponse);
+        console.log(verifiedResponse, "abc");
         if (verifiedResponse.status === 'approved') {
             log.info(`Successfully verified`);
-            res.status(200).send({
-                message: 'Otp verified'
+            const jwtToken = jwt.sign({
+                phoneNo: loginInfo.phoneNo,
+            }, secretKey);
+            res.header('x-auth-token', jwtToken).status(200).send({
+                message: 'Otp verified',
+                phoneNo: loginInfo.phoneNo
             })
         }
         else {
