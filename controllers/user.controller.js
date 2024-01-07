@@ -85,14 +85,11 @@ async function verifyOtpController(req, res) {
         console.log(verifiedResponse, "abc");
         if (verifiedResponse.status === 'approved') {
             log.info(`Successfully verified`);
-            const user = await getUserRole(loginInfo.phoneNo, res);
-            console.log({ user }, "Important check");
+            // const user = await getUserRole(loginInfo.phoneNo, res);
+            // console.log({ user }, "Important check");
             const jwtToken = jwt.sign(
                 {
-                    "UserInfo": {
-                        "username": loginInfo.username,
-                        // "roles": loginInfo.roles
-                    }
+                    "username": loginInfo.username,
                 }, secretKey);
             res.header('x-auth-token', jwtToken).status(200).send({
                 message: 'Otp verified',
