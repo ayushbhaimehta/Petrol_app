@@ -1,12 +1,8 @@
 const Logger = require('../logger/logger');
 const log = new Logger('User_Dao');
 const { UserModel } = require('../models/user.schemaModel')
-// const jwt = require('jsonwebtoken');
-// const bcrypt = require('bcrypt');
 
 const secretKey = "12345"
-
-
 
 //I have included this for dev puprose wil remember to comment it out before testing and final deployment
 // mongoose.connection.dropCollection('users', err => { if (err) log.error('Unable to drop user collections: ' + err) });
@@ -134,11 +130,6 @@ async function addAddressDao(loginInfo, res) {
     // const adrArray = payload.address;
     payload.address.push(adr);
     console.log(payload);
-    // console.log(adrArray, "Flagger");
-
-    // const result = await UserModel.find
-    // console.log(adrArray.address[0].name);
-    // console.log(Array.isArray(adrArray.address));
     const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { address: payload.address }, (err, response) => {
         console.log("updatePoint");
         if (err || !response) {
@@ -151,12 +142,9 @@ async function addAddressDao(loginInfo, res) {
         // console.log(res);
         return res.status(200).send({
             message: 'Successfully added new address',
-            // result: res.body.address
-            // 
         })
     })
     return result;
-    // return res.send({ message: 'testing phase' })
 }
 
 async function updatePhoneNo(loginInfo, res) {
@@ -190,27 +178,6 @@ async function validateLoginUser(loginInfo, response) {
                 message: 'No user with username' + username
             });
         }
-        // const dbPassword = result.password;
-
-        // if (result && bcrypt.compareSync(password, dbPassword)) {
-        //     log.info(username + ' has been validated and loggedin');
-        //     const jwtToken = jwt.sign({
-        //         exp: Math.floor(Date.now() / 1000) + (60),
-        //         username: username,
-        //     }, secretKey);
-
-        //     return response.header('x-auth-token', jwtToken).send({
-        //         username: username,
-        //         message: 'Valid credential.'
-        //     });
-        // }
-        // else {
-        //     log.warn('Unable to validate for' + username);
-        //     return response.status(404).send({
-        //         username: username,
-        //         message: 'password wrong.'
-        //     });
-        // }
     });
 }
 

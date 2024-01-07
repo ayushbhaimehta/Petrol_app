@@ -100,45 +100,6 @@ async function verifyOtpController(req, res) {
             message: 'Wrong otp'
         })
     }
-
-    // try {
-    //     console.log("abc");
-    //     // const verifiedResponse = await client.verify.v2
-    //     //     .services(verifySid)
-    //     //     .verificationChecks.create({
-    //     //         to: `+917879038278`,
-    //     //         code: loginInfo.OTP,
-    //     //     })
-    //     // console.log(verifiedResponse);
-    //     readline.question("Please enter the OTP:", (otpCode) => {
-    //         client.verify.v2
-    //             .services(verifySid)
-    //             .verificationChecks.create({ to: "+917879038278", code: otpCode })
-    //             .then((verification_check) => console.log(verification_check.status))
-    //             .then(() => readline.close());
-    //     });
-    //     // console.log({ readline });
-
-    // } catch (error) {
-    //     log.error(`Error in verifing the otp`);
-    //     res.status(404).send({
-    //         message: 'Wrong otp'
-    //     })
-    // }
-}
-
-async function loginController(req, res) {
-    // console.log({ req });
-    // let loginInfo = req.body;
-    // let { error } = userValidator.validateLoginUserSchema(loginInfo);
-    // if (isNotValidSchema(error, res)) return;
-    // try {
-
-    //     // const response = await userDao.validateLoginUser(loginInfo, res);
-    //     // return response;
-    // } catch (error) {
-    //     log.error(`Error in login for username ${loginInfo.username}: ` + err);
-    // }
 }
 
 async function getByPhoneNoController(req, res) {
