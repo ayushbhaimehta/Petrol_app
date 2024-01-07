@@ -50,6 +50,7 @@ async function resgisterNewUser(userObj, response) {
     let newUser = new UserModel({
         name: userObj.name,
         username: userObj.username,
+        // roles: { "User": 2001 },
         phoneNo: userObj.phoneNo,
         address: [{
             name: userObj.address[ind - 1].name,

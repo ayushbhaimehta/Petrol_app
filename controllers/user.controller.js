@@ -6,6 +6,7 @@ const log = new Logger('User_Controller');
 const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
 const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
 const client = require("twilio")(accountSid, authToken);
+const { UserModel } = require('../models/user.schemaModel')
 const jwt = require('jsonwebtoken');
 
 // const readline = require("readline");
@@ -66,6 +67,10 @@ async function sendOtpController(req, res) {
     }
 }
 
+async function getUserRole(phoneNo, res) {
+    return await UserModel.findOne({ phoneNo: phoneNo })
+}
+
 async function verifyOtpController(req, res) {
     const loginInfo = req.body;
     const otp = loginInfo.OTP;
@@ -80,9 +85,15 @@ async function verifyOtpController(req, res) {
         console.log(verifiedResponse, "abc");
         if (verifiedResponse.status === 'approved') {
             log.info(`Successfully verified`);
-            const jwtToken = jwt.sign({
-                phoneNo: loginInfo.phoneNo,
-            }, secretKey);
+            const user = await getUserRole(loginInfo.phoneNo, res);
+            console.log({ user }, "Important check");
+            const jwtToken = jwt.sign(
+                {
+                    "UserInfo": {
+                        "username": loginInfo.username,
+                        // "roles": loginInfo.roles
+                    }
+                }, secretKey);
             res.header('x-auth-token', jwtToken).status(200).send({
                 message: 'Otp verified',
                 phoneNo: loginInfo.phoneNo
@@ -95,7 +106,7 @@ async function verifyOtpController(req, res) {
         }
 
     } catch (error) {
-        log.error(`Error in verifing the otp`);
+        log.error(`Error in verifing the otp` + error);
         res.status(404).send({
             message: 'Wrong otp'
         })
@@ -185,7 +196,6 @@ function isNotValidSchema(error, res) {
 
 module.exports = {
     registerNewUser,
-    loginController,
     getByUsernameController,
     getByPhoneNoController,
     updatePhoneController,
