@@ -11,6 +11,7 @@ function authTokenValidator(req, res, next) {
     }
     try {
         const payload = jwt.verify(token, secretKey);
+        console.log({ payload });
         next();
     } catch (err) {
         return res.status(403).send({

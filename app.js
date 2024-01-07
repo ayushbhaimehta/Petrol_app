@@ -43,10 +43,11 @@ app.use(function (req, res, next) {
 // -----------------> Routes <-----------------------------------//
 
 const userservicerouter = require('./routes/user.router');
+const orderservicerouter = require('./routes/order.router')
 
 // -----------------> Routes Setup <---------------------------------//
 app.use('/user', userservicerouter);
-
+app.use('/order', orderservicerouter);
 
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
@@ -69,7 +70,7 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Application running in ${environment} environment, listening to port ${port}....`);
     try {
-        mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+        mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true })
             .then(console.log('connected to mongo database....'));
     } catch (error) {
         console.error('unable to connect, please check your connection....' + error)
