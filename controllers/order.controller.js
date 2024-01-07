@@ -6,6 +6,30 @@ const orderDao = require('../Dao/order.dao')
 // const { UserModel } = require('../models/user.schemaModel')
 const jwt = require('jsonwebtoken');
 
+async function registerNewUser(req, res) {
+    let userObj = req.body;
+    let { error } = userValidator.validateNewUserSchema(userObj);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const response = await userDao.resgisterNewUser(userObj, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in registering new user with username ${userObj.username}: ` + error);
+    }
+}
+
+async function addOrderController(req, res) {
+    console.log("abcc");
+    const orderInfo = req.body;
+    let { err } = orderValidator.validateAddOrderSchema(orderInfo, res);
+    if (isNotValidSchema(err, res)) return;
+    try {
+        const response = "abcd";
+        res.send({ message: testing })
+    } catch (error) {
+
+    }
+}
 
 async function getAllOrdersController(req, res) {
     console.log("controller checkpoint");
@@ -34,5 +58,6 @@ function isNotValidSchema(error, res) {
 }
 
 module.exports = {
-    getAllOrdersController
+    getAllOrdersController,
+    addOrderController
 };
