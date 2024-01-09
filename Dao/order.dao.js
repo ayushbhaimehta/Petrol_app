@@ -61,42 +61,48 @@ async function addOrderDao(orderInfo, res) {
 
     // check if already have some orders or not
     const orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
-    let index = orderDetails.order.length;
-
+    console.log({ orderDetails });
+    let index = 0;
+    if (orderDetails) {
+        index = orderDetails.order.length;
+    }
     // condition for first time orders
     if (index === 0) {
-        let newOrder = new orderInfo({
+        let newOrder = new orderModel({
             "phoneNo": orderInfo.phoneNo,
             "order": {
-                "fuelType": orderInfo.order[ind - 1].fuelType,
-                "fuelAmount": orderInfo.order[ind - 1].fuelAmount,
-                "emergency": orderInfo.order[ind - 1].emergency,
-                "Date": orderInfo.order[ind - 1].Date,
-                "preferredTiming": orderInfo.order[ind - 1].preferredTiming,
-                "CoupanId": orderInfo.order[ind - 1].CoupanId,
-                "addressId": orderInfo.order[ind - 1].addressId,
-                "status": orderInfo.order[ind - 1].status,
-                "assignedTo": orderInfo.order[ind - 1].assignedTo,
-                "assignTiming": orderInfo.order[ind - 1].assignTiming
+                "fuelType": orderInfo.order.fuelType,
+                "fuelAmount": orderInfo.order.fuelAmount,
+                "emergency": orderInfo.order.emergency,
+                "Date": orderInfo.order.Date,
+                "preferredTiming": orderInfo.order.preferredTiming,
+                "CoupanId": orderInfo.order.CoupanId,
+                "addressId": orderInfo.order.addressId,
+                "status": orderInfo.order.status,
+                "assignedTo": orderInfo.order.assignedTo,
+                "assignTiming": orderInfo.order.assignTiming
             }
         });
+        // save querry
         const result = await newOrder.save((err, result) => {
             if (err) {
-                log.error(`Error in adding first order for phoneNo ${userObj.phoneNo}: ` + err);
-                return response.status(500).send({
-                    message: 'phoneNo ' + userObj.phoneNo + ' Error in saving first order.'
+                log.error(`Error in adding first order for phoneNo ${orderInfo.phoneNo}: ` + err);
+                return res.status(500).send({
+                    message: 'phoneNo ' + orderInfo.phoneNo + ' Error in saving first order.'
                 });
             };
             log.info(result.phoneNo + ' has just ordered for the first time!');
-            return response.status(200).send({
+            return res.status(200).send({
                 message: 'You have ordered successfully.',
                 phoneNo: result.phoneNo
             });
         });
+        console.log("11");
         return result;
     }
     // condition for adding orders in to the array
-
+    const check = orderDetails.order.push(orderInfo.order);
+    console.log(check, "flagger");
 
 
     console.log({ payload });
