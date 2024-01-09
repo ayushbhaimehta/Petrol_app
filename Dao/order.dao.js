@@ -16,7 +16,6 @@ async function phoneExists(orderInfo) {
 async function addOrderDao(orderInfo, res) {
     console.log({ orderInfo });
     const payload = await phoneExists(orderInfo);
-    // phone does not exists then throw error
     if (!payload) {
         res.status(404).send({
             message: 'Cant find the user with phoneNo' + orderInfo.phoneNo
@@ -24,7 +23,6 @@ async function addOrderDao(orderInfo, res) {
     }
 
 
-    //check for address
     const reqAdr = orderInfo.addressId;
     const Order = orderInfo.order;
     const {
@@ -57,10 +55,8 @@ async function addOrderDao(orderInfo, res) {
     console.log("map check");
     searchAdrId();
     if (flag === false) {
-        // could'nt find a addres please add a address
     }
 
-    // check if already have some orders or not
     const orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
     console.log({ orderDetails });
     let index = 0;
@@ -68,7 +64,6 @@ async function addOrderDao(orderInfo, res) {
     if (orderDetails) {
         index = orderDetails.order.length;
     }
-    // condition for first time orders
     if (index === 0) {
         let newOrder = new orderModel({
             "phoneNo": orderInfo.phoneNo,
@@ -85,7 +80,6 @@ async function addOrderDao(orderInfo, res) {
                 "assignTiming": orderInfo.order.assignTiming
             }
         });
-        // save querry
         const result = await newOrder.save((err, result) => {
             if (err) {
                 log.error(`Error in adding first order for phoneNo ${orderInfo.phoneNo}: ` + err);
@@ -102,7 +96,6 @@ async function addOrderDao(orderInfo, res) {
         console.log("11");
         return result;
     }
-    // condition for adding orders in to the array
     const check = orderDetails.order;
     check.push(Order)
     console.log({ check });
