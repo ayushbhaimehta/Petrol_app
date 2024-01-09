@@ -26,6 +26,7 @@ async function addOrderDao(orderInfo, res) {
 
     //check for address
     const reqAdr = orderInfo.addressId;
+    const Order = orderInfo.order;
     const {
         _id,
         name,
@@ -63,6 +64,7 @@ async function addOrderDao(orderInfo, res) {
     const orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
     console.log({ orderDetails });
     let index = 0;
+    console.log({ index });
     if (orderDetails) {
         index = orderDetails.order.length;
     }
@@ -93,7 +95,7 @@ async function addOrderDao(orderInfo, res) {
             };
             log.info(result.phoneNo + ' has just ordered for the first time!');
             return res.status(200).send({
-                message: 'You have ordered successfully.',
+                message: 'Your first order is queued successfully.',
                 phoneNo: result.phoneNo
             });
         });
@@ -101,14 +103,32 @@ async function addOrderDao(orderInfo, res) {
         return result;
     }
     // condition for adding orders in to the array
-    const check = orderDetails.order.push(orderInfo.order);
-    console.log(check, "flagger");
-
-
-    console.log({ payload });
-    res.status(200).send({
-        message: 'Testing phase'
+    const check = orderDetails.order;
+    check.push(Order)
+    console.log({ check });
+    // const response = await orderModel.findOneAndUpdate({ phoneNo: orderInfo.phoneNo }, { order: check })
+    const result = await orderModel.findOneAndUpdate({ phoneNo: phoneNo }, { order: check }, { new: true, upsert: true }, (err, response) => {
+        console.log("updatePoint");
+        if (err || !response) {
+            console.log(response);
+            log.error(`Error in adding new order` + err);
+            return res.status(400).send({
+                message: 'Error in adding new order'
+            })
+        }
+        log.info(`Sucessfully added new order in the order array to phoneNo ${phoneNo}`);
+        // console.log(res);
+        return res.status(200).send({
+            message: 'Successfully added new order',
+        })
     })
+    return result;
+
+
+    // console.log({ payload });
+    // res.status(200).send({
+    //     message: 'Testing phase'
+    // })
 }
 
 module.exports = {
