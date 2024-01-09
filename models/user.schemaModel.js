@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const registerInputUserSchemaModel = {
     name: Joi.string(),
     username: Joi.string(),
-    phoneNo: Joi.string().max(10).required(),
+    phoneNo: Joi.string().max(10).min(10),
     address: Joi.array().items(
         Joi.object({
             name: Joi.string(),

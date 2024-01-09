@@ -22,12 +22,16 @@ async function addOrderController(req, res) {
     console.log("abcc");
     const orderInfo = req.body;
     let { err } = orderValidator.validateAddOrderSchema(orderInfo, res);
+    // console.log("check");
     if (isNotValidSchema(err, res)) return;
+    // console.log("check2");
     try {
-        const response = "abcd";
-        res.send({ message: testing })
+        // console.log("check3");
+        const response = await orderDao.addOrderDao(orderInfo, res);
+        return response;
+        // res.status(200).send({ message: "Working" })
     } catch (error) {
-
+        log.error(`Error in adding new order for phoneNO ${orderInfo.phoneNo}` + error)
     }
 }
 

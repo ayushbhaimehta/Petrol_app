@@ -8,31 +8,23 @@ const getAllOrdersSchemaModel = {
     phoneNo: Joi.string().min(10).max(10)
 }
 
-const addOrderSchemaModel = Joi.object({
-    phoneNo: Joi.string().required(),
-    order: Joi.object({
-        fuelType: Joi.string().required(),
-        fuelAmount: Joi.string().required(),
-        emergency: Joi.boolean().required(),
-        Date: Joi.date().iso().required(),
-        Timing: Joi.string().required(),
-        Coupan: Joi.object({
-            coupanName: Joi.string().required(),
-            discount: Joi.string().required(),
-            minPrice: Joi.number().required(),
-            MaxDiscount: Joi.string().required(),
-        }),
-        address: Joi.object({
-            name: Joi.string().required(),
-            phoneNo: Joi.string().required(),
-            myself: Joi.boolean().required(),
-            saveas: Joi.string().required(),
-            fulladdr: Joi.string().required(),
-            vehicle: Joi.string().required(),
-            vnumber: Joi.string().required(),
-        }),
-    }).required(),
-});
+const addOrderSchemaModel = {
+    phoneNo: Joi.string().max(10).min(10),
+    address: Joi.array().items(
+        Joi.object({
+            fuelType: Joi.string(),
+            fuelAmount: Joi.string(),
+            emergency: Joi.boolean(),
+            Date: Joi.date(),
+            preferredTiming: Joi.string(),
+            CoupanId: Joi.string(),
+            addressId: Joi.string(),
+            status: Joi.string(),
+            assignedTo: Joi.string(),
+            assignTiming: Joi.string()
+        })
+    )
+};
 
 
 const mongoOrderSchema = new mongoose.Schema({
@@ -42,22 +34,16 @@ const mongoOrderSchema = new mongoose.Schema({
         fuelAmount: String,
         emergency: Boolean,
         Date: Date,
-        Timing: String,
-        Coupan: {
-            coupanName: String,
-            discount: String,
-            minPrice: Number,
-            MaxDiscount: String
-        },
-        address: {
-            name: String,
-            phoneNo: String,
-            myself: Boolean,
-            saveas: String,
-            fulladdr: String,
-            vehicle: String,
-            vnumber: String,
-        }
+        preferredTiming: String,
+        CoupanId: String,
+        addressId: String,
+        status: String,
+        assignedTo: String,
+        assignTiming: String
+        // flag status
+        // Assigned to?
+        // assign timing
+        //  
     }],
 });
 
