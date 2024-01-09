@@ -147,6 +147,26 @@ async function addAddressDao(loginInfo, res) {
     return result;
 }
 
+async function updateDetailsDao(loginInfo, res) {
+    const phoneNo = loginInfo.phoneNo;
+    const username = loginInfo.username;
+    const name = loginInfo.name;
+    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { username: username, name: name }, (error, response) => {
+        console.log("querry point");
+        if (error || !response) {
+            log.error(`Error while updating the user details ` + error)
+            return res.status(404).send({
+                message: 'Error while updating the user details of phoneNo ' + phoneNo
+            })
+        }
+        log.info(`Successfully updated the user details for phoneNo ${phoneNo}`);
+        return res.status(200).send({
+            message: `Updated the user details for the phoneNo ${phoneNo}`
+        })
+    })
+    return result
+}
+
 async function updatePhoneNo(loginInfo, res) {
     const phoneNo = loginInfo.phoneNo;
     const newPhoneNo = loginInfo.newPhoneNo;
@@ -190,5 +210,6 @@ module.exports = {
     getByPhoneNo,
     updatePhoneNo,
     updateAddressDao,
-    addAddressDao
+    addAddressDao,
+    updateDetailsDao
 }

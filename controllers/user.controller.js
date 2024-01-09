@@ -175,6 +175,23 @@ async function addAdressController(req, res) {
     }
 }
 
+async function updateDetailsController(req, res) {
+    const loginInfo = req.body;
+    console.log({ loginInfo });
+    let { error } = userValidator.validateUpdateDetailsSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        console.log("validation and schema done");
+        const result = await userDao.updateDetailsDao(loginInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in updating user details` + error);
+        return res.status(500).send({
+            message: 'Something went wrong with updating the user details'
+        })
+    }
+}
+
 async function updatePhoneController(req, res) {
     const loginInfo = req.body;
     console.log(loginInfo);
@@ -224,5 +241,6 @@ module.exports = {
     sendOtpController,
     verifyOtpController,
     addAdressController,
-    emailOtpSendController
+    emailOtpSendController,
+    updateDetailsController
 };

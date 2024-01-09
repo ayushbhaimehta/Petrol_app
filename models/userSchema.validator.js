@@ -9,6 +9,10 @@ const validateLoginUserSchema = (user) => {
     return Joi.validate(user, userSchemaModel.loginSchemaModel);
 }
 
+const validateUpdateDetailsSchema = (loginInfo) => {
+    return Joi.validate(loginInfo, userSchemaModel.updateDetailsSchemaModel);
+}
+
 const userValidateEmailSendOtpSchema = (loginInfo) => {
     return Joi.validate(loginInfo, userSchemaModel.sendOtpEmailSchemaModel)
 }
@@ -58,5 +62,6 @@ module.exports = {
     validateSendOtpSchema,
     validateVerifyOtpSchema,
     validateAddaddressSchema,
-    userValidateEmailSendOtpSchema
+    userValidateEmailSendOtpSchema,
+    validateUpdateDetailsSchema
 }

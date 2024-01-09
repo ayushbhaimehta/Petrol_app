@@ -55,6 +55,12 @@ const getByUsernameSchema = {
     username: Joi.string().required()
 }
 
+const updateDetailsSchemaModel = {
+    phoneNo: Joi.string(),
+    username: Joi.string(),
+    name: Joi.string(),
+}
+
 const updatePhoneSchemaModel = {
     phoneNo: Joi.string().required().max(10).min(10),
     newPhoneNo: Joi.string().required().max(10).min(10)
@@ -123,5 +129,6 @@ module.exports = {
     verifyOtpSchemaModel,
     UserModel,
     addAddressSchemaModel,
-    sendOtpEmailSchemaModel
+    sendOtpEmailSchemaModel,
+    updateDetailsSchemaModel
 }

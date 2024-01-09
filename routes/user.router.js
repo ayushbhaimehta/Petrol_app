@@ -9,7 +9,8 @@ const {
     sendOtpController,
     verifyOtpController,
     emailOtpSendController,
-    emailOtpVerifyController
+    updateDetailsController
+    // emailOtpVerifyController
 } = require('../controllers/user.controller')
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
 const userRouter = express.Router();
@@ -25,5 +26,6 @@ userRouter.post('/sendotp', sendOtpController);//working
 userRouter.post('/emailSendOtp', emailOtpSendController);
 // userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
 userRouter.post('/verifyOtp', verifyOtpController);//working
+userRouter.post('/updatedetails', updateDetailsController,);//working
 
 module.exports = userRouter;
