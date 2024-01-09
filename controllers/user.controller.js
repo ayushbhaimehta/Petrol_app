@@ -43,6 +43,30 @@ const secretKey = "123456789"
 //         });
 //         // console.log({ readline });
 //     });
+
+async function emailOtpSendController(req, res) {
+    const loginInfo = req.body;
+    const email = loginInfo.username;
+    let { error } = userValidator.userValidateEmailSendOtpSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const otpResponse = await client.verify.v2
+            .services("new one from sendgrid")
+            .verifications.create({
+                to: `${email}`,
+                channel: 'email',
+            })
+        console.log(otpResponse);
+        log.info(`Sucessfully sent the otp to username ${email}`);
+        return res.status(200).send({
+            message: 'Otp Sent to username' + email,
+            result: otpResponse
+        })
+    } catch (error) {
+        log.error(`Error in sending the otp using twilio for username recipient ${email}`)
+        return res.status
+    }
+}
 async function sendOtpController(req, res) {
     const loginInfo = req.body;
     let { error } = userValidator.validateSendOtpSchema(loginInfo);
@@ -199,5 +223,6 @@ module.exports = {
     updateAddress,
     sendOtpController,
     verifyOtpController,
-    addAdressController
+    addAdressController,
+    emailOtpSendController
 };

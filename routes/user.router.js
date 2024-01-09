@@ -7,8 +7,10 @@ const {
     updatePhoneController,
     getByPhoneNoController,
     sendOtpController,
-    verifyOtpController } = require('../controllers/user.controller')
-// const { otpService } = require('../Dao/user.dao')
+    verifyOtpController,
+    emailOtpSendController,
+    emailOtpVerifyController
+} = require('../controllers/user.controller')
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
 const userRouter = express.Router();
 
@@ -20,6 +22,8 @@ userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//wo
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working
 userRouter.post('/sendotp', sendOtpController);//working
+userRouter.post('/emailSendOtp', emailOtpSendController);
+// userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
 userRouter.post('/verifyOtp', verifyOtpController);//working
 
 module.exports = userRouter;

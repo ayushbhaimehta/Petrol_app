@@ -91,6 +91,10 @@ const sendOtpSchemaModel = {
     countryCode: Joi.string().required()
 }
 
+const sendOtpEmailSchemaModel = {
+    username: Joi.string()
+}
+
 const verifyOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
     countryCode: Joi.string().required(),
@@ -118,5 +122,6 @@ module.exports = {
     sendOtpSchemaModel,
     verifyOtpSchemaModel,
     UserModel,
-    addAddressSchemaModel
+    addAddressSchemaModel,
+    sendOtpEmailSchemaModel
 }

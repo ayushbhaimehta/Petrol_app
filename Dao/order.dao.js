@@ -6,8 +6,23 @@ const { UserModel } = require('../models/user.schemaModel')
 const secretKey = "12345"
 
 async function getAllOrdersDao(loginInfo, res) {
-    console.log({ loginInfo });
-    res.send({ message: 'testing mode' })
+    const phoneNo = loginInfo.phoneNo;
+    console.log({ phoneNo });
+    await orderModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+        console.log("checkpoint3");
+        if (err || !response) {
+            log.error(`Error in finding phoneNo ${phoneNo}` + err);
+            return res.status(404).send({
+                phoneNo: phoneNo,
+                message: 'No order with this' + phoneNo + 'found'
+            })
+        }
+        log.info(`Found a order with phone No ${phoneNo}`);
+        return res.status(200).send({
+            result: response,
+            message: `Found a order with phoneno ${phoneNo}`
+        })
+    })
 }
 async function phoneExists(orderInfo) {
     return await UserModel.findOne({ phoneNo: orderInfo.phoneNo });
@@ -17,15 +32,14 @@ async function addOrderDao(orderInfo, res) {
     console.log({ orderInfo });
     const payload = await phoneExists(orderInfo);
     if (!payload) {
-        res.status(404).send({
+        return res.status(404).send({
             message: 'Cant find the user with phoneNo' + orderInfo.phoneNo
         })
     }
 
-
-    const reqAdr = orderInfo.addressId;
+    const reqAdr = orderInfo.order.addressId;
     const Order = orderInfo.order;
-    const {
+    let {
         _id,
         name,
         phoneNo,
@@ -35,11 +49,12 @@ async function addOrderDao(orderInfo, res) {
         vehicle,
         vnumber,
     } = "";
-    const flag = false;
-    const searchAdrId = () => {
+    let flag = false;
+    function searchAdrId() {
         payload.address.map((index) => {
-            console.log(index);
-            if (index._id === reqAdr) {
+            // console.log(index);
+            console.log(index._id, "dbId ", reqAdr);
+            if (index._id == reqAdr) {
                 _id = index._id;
                 name = index.name;
                 phoneNo = index.phoneNo;
@@ -48,6 +63,7 @@ async function addOrderDao(orderInfo, res) {
                 fulladdr = index.fulladdr;
                 vehicle = index.vehicle;
                 vnumber = index.vnumber;
+                console.log("112233");
                 flag = true;
             }
         })
@@ -55,9 +71,12 @@ async function addOrderDao(orderInfo, res) {
     console.log("map check");
     searchAdrId();
     if (flag === false) {
+        log.error(`Cannot find a address this account`);
+        return res.status(404).send({
+            message: 'Please add a address first to make an order'
+        })
     }
-
-    const orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
+    let orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
     console.log({ orderDetails });
     let index = 0;
     console.log({ index });
