@@ -198,15 +198,19 @@ async function deleteAddressDao(loginInfo, res) {
     //         _id: idFound
     //     }]
     // })
-    const result = await UserModel.updateOne(
-        { phoneNo: phoneNo },
+    const result = await UserModel.updateOne({ phoneNo: phoneNo },
         { $pull: { address: { _id: idFound } } },
-        (err, result) => {
-            if (err) {
-                console.error('Error removing address:', err);
-            } else {
-                console.log('Address removed successfully:', result);
+        (err, response) => {
+            if (err || !response) {
+                log.error(`Error in removing the address` + err);
+                return res.status(404).send({
+                    message: `Error in removing the address`
+                })
             }
+            log.info(`Successfully deleted the address from phoneNo ${phoneNo}'s addresses`);
+            return res.staus(200).send({
+                message: 'Successfully deleted the address'
+            })
         }
     );
     return result;
