@@ -9,7 +9,8 @@ const {
     sendOtpController,
     verifyOtpController,
     emailOtpSendController,
-    updateDetailsController
+    updateDetailsController,
+    addressDeleteController
     // emailOtpVerifyController
 } = require('../controllers/user.controller')
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
@@ -22,8 +23,9 @@ userRouter.post('/register', authTokenValidator, registerNewUser);//working
 userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//working
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working
+userRouter.delete('/deleteAddress', addressDeleteController)
 userRouter.post('/sendotp', sendOtpController);//working
-userRouter.post('/emailSendOtp', emailOtpSendController);
+userRouter.post('/emailSendOtp', emailOtpSendController);//underprogress
 // userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
 userRouter.post('/verifyOtp', verifyOtpController);//working
 userRouter.post('/updatedetails', updateDetailsController,);//working

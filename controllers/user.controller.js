@@ -196,6 +196,22 @@ async function addAdressController(req, res) {
     }
 }
 
+async function addressDeleteController(req, res) {
+    const loginInfo = req.body;
+    let { error } = userValidator.validateAddressDeleteSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        console.log("schema and validation check");
+        const result = await userDao.deleteAddressDao(loginInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in deleting this address` + error);
+        return res.status(500).send({
+            message: 'Error in deleting this address'
+        })
+    }
+}
+
 async function updateDetailsController(req, res) {
     const loginInfo = req.body;
     console.log({ loginInfo });
@@ -263,5 +279,6 @@ module.exports = {
     verifyOtpController,
     addAdressController,
     emailOtpSendController,
-    updateDetailsController
+    updateDetailsController,
+    addressDeleteController
 };

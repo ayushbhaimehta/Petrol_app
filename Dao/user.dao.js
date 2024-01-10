@@ -154,6 +154,65 @@ async function addAddressDao(loginInfo, res) {
     return result;
 }
 
+async function deleteAddressDao(loginInfo, res) {
+    console.log("dao entered");
+    // store in a variable phoneno and address
+    // check for phoneNo
+    // check for address in that array
+    // matching address id found 
+    // mongo querry for update and delete
+    // return the result
+    const phoneNo = loginInfo.phoneNo;
+    const addressDel = loginInfo.address;
+    console.log({ addressDel });
+    let flag = false;
+    let userExists = await getAddress(phoneNo);
+    console.log({ userExists });
+    let idFound;
+
+    for (let i = 0; i < userExists.address.length; i++) {
+        if (userExists.address[i].name === addressDel.name &&
+            userExists.address[i].phoneNo === addressDel.phoneNo &&
+            userExists.address[i].myself === addressDel.myself &&
+            userExists.address[i].saveas === addressDel.saveas &&
+            userExists.address[i].fulladdr === addressDel.fulladdr &&
+            userExists.address[i].vehicle === addressDel.vehicle &&
+            userExists.address[i].vnumber === addressDel.vnumber
+        ) {
+            flag = true;
+            idFound = userExists.address[i]._id;
+            break;
+        }
+        console.log(userExists.address[i], "abbbbc");
+        // console.log(i);
+    }
+    if (flag === false) {
+        log.error(`Cannot find an address you entered ${addressDel}`);
+        return res.status(404).send({
+            message: 'Error in finding the given address'
+        })
+    }
+
+    // const result = await UserModel.findOneAndDelete({ phoneNo: phoneNo }, {
+    //     address: [{
+    //         _id: idFound
+    //     }]
+    // })
+    const result = await UserModel.updateOne(
+        { phoneNo: phoneNo },
+        { $pull: { address: { _id: idFound } } },
+        (err, result) => {
+            if (err) {
+                console.error('Error removing address:', err);
+            } else {
+                console.log('Address removed successfully:', result);
+            }
+        }
+    );
+    return result;
+    // return res.status(200).send({ message: 'testing phase' })
+}
+
 async function updateDetailsDao(loginInfo, res) {
     const phoneNo = loginInfo.phoneNo;
     const username = loginInfo.username;
@@ -218,5 +277,6 @@ module.exports = {
     updatePhoneNo,
     updateAddressDao,
     addAddressDao,
-    updateDetailsDao
+    updateDetailsDao,
+    deleteAddressDao
 }
