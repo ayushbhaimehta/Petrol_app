@@ -13,8 +13,29 @@ const jwt = require('jsonwebtoken');
 
 async function registerNewUser(req, res) {
     let userObj = req.body;
+    userObj.name = "";
+    userObj.username = "";
+    userObj.address = [];
+    console.log(userObj);
+    // {
+    //     "name": "ayush bhai mehta",
+    //     "username": "ayushbhaimehta@gmail.com",
+    //     "phoneNo": "1234567890",
+    //     "address": [
+    //         {
+    //             "name": "Ayush",
+    //             "phoneNo": "1234567890",
+    //             "myself": true,
+    //             "saveas": "Home",
+    //             "fulladdr": "123 bhaldarpura Sarafaward Jabalpur India",
+    //             "vehicle": "Activa scoty",
+    //             "vnumber": "1001"
+    //         }
+    //     ]
+    // }
     let { error } = userValidator.validateNewUserSchema(userObj);
     if (isNotValidSchema(error, res)) return;
+    console.log("entering dao");
     try {
         const response = await userDao.resgisterNewUser(userObj, res);
         return response;

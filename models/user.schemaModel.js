@@ -5,8 +5,8 @@ const log = new Logger('User_SchemaModel');
 const bcrypt = require('bcrypt');
 
 const registerInputUserSchemaModel = {
-    name: Joi.string(),
-    username: Joi.string(),
+    name: Joi.string().allow(''),
+    username: Joi.string().allow(''),
     phoneNo: Joi.string().max(10).min(10),
     address: Joi.array().items(
         Joi.object({

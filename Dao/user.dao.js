@@ -32,7 +32,7 @@ async function getByUsername(loginInfo, response) {
 
 async function resgisterNewUser(userObj, response) {
     console.log({ userObj });
-    console.log(userObj.address[0]);
+    // console.log(userObj.address[0]);
     const ind = userObj.address.length;
     console.log(ind, "array size");
     const phoneNo = userObj.phoneNo;
@@ -46,21 +46,28 @@ async function resgisterNewUser(userObj, response) {
             // result: existingUser
         });
     }
-
+    console.log("new user creation point");
+    // let newUser = new UserModel({
+    //     name: userObj.name,
+    //     username: userObj.username,
+    //     phoneNo: userObj.phoneNo,
+    //     address: [{
+    //         name: userObj.address[ind - 1].name,
+    //         phoneNo: userObj.address[ind - 1].phoneNo,
+    //         myself: userObj.address[ind - 1].myself,
+    //         saveas: userObj.address[ind - 1].saveas,
+    //         fulladdr: userObj.address[ind - 1].fulladdr,
+    //         vehicle: userObj.address[ind - 1].vehicle,
+    //         vnumber: userObj.address[ind - 1].vnumber
+    //     }]
+    // });
     let newUser = new UserModel({
-        name: userObj.name,
-        username: userObj.username,
+        name: '',
+        username: '',
         phoneNo: userObj.phoneNo,
-        address: [{
-            name: userObj.address[ind - 1].name,
-            phoneNo: userObj.address[ind - 1].phoneNo,
-            myself: userObj.address[ind - 1].myself,
-            saveas: userObj.address[ind - 1].saveas,
-            fulladdr: userObj.address[ind - 1].fulladdr,
-            vehicle: userObj.address[ind - 1].vehicle,
-            vnumber: userObj.address[ind - 1].vnumber
-        }]
+        address: []
     });
+    console.log("bool check");
 
     const result = await newUser.save((err, result) => {
         if (err) {

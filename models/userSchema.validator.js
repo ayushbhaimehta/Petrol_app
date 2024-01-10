@@ -2,6 +2,7 @@ const Joi = require('joi');
 const userSchemaModel = require('./user.schemaModel');
 
 const validateNewUserSchema = (newUser) => {
+    console.log("checkpoint 1");
     return Joi.validate(newUser, userSchemaModel.registerInputUserSchemaModel);
 }
 

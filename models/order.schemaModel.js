@@ -10,7 +10,7 @@ const getAllOrdersSchemaModel = {
 
 const addOrderSchemaModel = {
     phoneNo: Joi.string().max(10).min(10),
-    address: Joi.array().items(
+    order: Joi.array().items(
         Joi.object({
             fuelType: Joi.string(),
             fuelAmount: Joi.string(),
