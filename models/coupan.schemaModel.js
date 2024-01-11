@@ -12,6 +12,10 @@ const addCoupanSchemaModel = {
     limit: Joi.string()
 }
 
+const getAllCoupanSchemaModel = {
+    phoneNo: Joi.string()
+}
+
 const mongoCoupanSchema = new mongoose.Schema({
     name: String,
     phoneNo: String,
@@ -27,5 +31,6 @@ log.success(`Coupan Schema model created`);
 
 module.exports = {
     CoupanModel,
-    addCoupanSchemaModel
+    addCoupanSchemaModel,
+    getAllCoupanSchemaModel,
 }

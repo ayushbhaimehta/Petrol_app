@@ -5,6 +5,11 @@ const validateAddCoupanSchema = (coupanInfo) => {
     return Joi.validate(coupanInfo, coupanSchemaModel.addCoupanSchemaModel);
 }
 
+const validateGetAllCoupansSchema = (coupanInfo) => {
+    return Joi.validate(coupanInfo, coupanSchemaModel.getAllCoupanSchemaModel);
+}
+
 module.exports = {
-    validateAddCoupanSchema
+    validateAddCoupanSchema,
+    validateGetAllCoupansSchema
 }

@@ -23,6 +23,19 @@ async function addCoupanController(req, res) {
     }
 }
 
+async function getAllCoupansController(req, res) {
+    log.info('controller entered');
+    const coupanInfo = req.params;
+    let { err } = CoupanValidator.validateGetAllCoupansSchema(coupanInfo, res);
+    if (isNotValidSchema(err, res)) return;
+
+    try {
+        const result = await coupanDao.getAllCoupansDao(coupanDao, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in Dao trycatch layer ` + error)
+    }
+}
 // async function getAllOrdersController(req, res) {
 //     console.log("controller checkpoint");
 //     const loginInfo = req.params;
@@ -50,5 +63,6 @@ function isNotValidSchema(error, res) {
 }
 
 module.exports = {
-    addCoupanController
+    addCoupanController,
+    getAllCoupansController
 };

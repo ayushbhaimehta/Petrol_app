@@ -29,6 +29,26 @@ const secretKey = "12345"
 //     return await UserModel.findOne({ phoneNo: orderInfo.phoneNo });
 // }
 
+async function getAllCoupansDao(coupanInfo, res) {
+    log.success('dao layer entered');
+    const phoneNo = coupanInfo.phoneNo;
+    await CoupanModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+        log.success('dao querry layer entered');
+        if (err || !response) {
+            log.error(`failed in the query in dao layer ` + err);
+            return res.status(404).send({
+                message: 'Cannot find any coupans with given phoneNo ' + phoneNo
+            })
+        }
+        console.log({ response });
+        log.success('Successfully fetched all the coupans with given phoen no');
+        res.status(200).send({
+            message: 'Successfully fetched all the coupans',
+            result: response
+        })
+    })
+}
+
 async function addCoupanDao(coupanInfo, res) {
     console.log({ coupanInfo });
     let newCoupan = new CoupanModel({
@@ -61,5 +81,6 @@ async function addCoupanDao(coupanInfo, res) {
 }
 
 module.exports = {
-    addCoupanDao
+    addCoupanDao,
+    getAllCoupansDao
 }

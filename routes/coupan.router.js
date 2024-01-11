@@ -1,11 +1,12 @@
 const express = require('express');
 const {
-    addCoupanController
+    addCoupanController,
+    getAllCoupansController
 } = require('../controllers/coupan.controller')
 
 const coupanRouter = express.Router();
 
-// orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
+coupanRouter.get('/getCoupans/:phoneNo', getAllCoupansController);
 coupanRouter.post('/addCoupans', addCoupanController);//working
 // edit order for status change assignment
 
