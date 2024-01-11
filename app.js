@@ -43,11 +43,13 @@ app.use(function (req, res, next) {
 // -----------------> Routes <-----------------------------------//
 
 const userservicerouter = require('./routes/user.router');
-const orderservicerouter = require('./routes/order.router')
+const orderservicerouter = require('./routes/order.router');
+const coupanservicerouter = require('./routes/coupan.router');
 
 // -----------------> Routes Setup <---------------------------------//
 app.use('/user', userservicerouter);
 app.use('/order', orderservicerouter);
+app.use('/coupan', coupanservicerouter);
 
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));

@@ -23,7 +23,7 @@ userRouter.post('/register', authTokenValidator, registerNewUser);//working
 userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//working
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working
-userRouter.delete('/deleteAddress', addressDeleteController)
+userRouter.delete('/deleteAddress', addressDeleteController);//working
 userRouter.post('/sendotp', sendOtpController);//working
 userRouter.post('/emailSendOtp', emailOtpSendController);//underprogress
 // userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
