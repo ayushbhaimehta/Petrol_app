@@ -1,7 +1,7 @@
 const CoupanValidator = require('../models/coupan.schema.validator');
 const Logger = require('../logger/logger');
 const log = new Logger('Order_Controller');
-
+const coupanDao = require('../Dao/coupan.dao')
 
 async function addCoupanController(req, res) {
     console.log("check");
@@ -12,11 +12,14 @@ async function addCoupanController(req, res) {
     console.log("check2");
     try {
         console.log("check3");
-        // const response = await orderDao.addOrderDao(orderInfo, res);
-        // return response;
-        res.status(200).send({ message: "Working" })
+        const response = await coupanDao.addCoupanDao(coupanInfo, res);
+        return response;
+        // res.status(200).send({ message: "Working" })
     } catch (error) {
         log.error(`Error in adding new coupan ${coupanInfo}` + error)
+        return res.status(500).send({
+            message: `Error in adding new Coupan ` + error
+        })
     }
 }
 

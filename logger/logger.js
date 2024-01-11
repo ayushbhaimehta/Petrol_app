@@ -9,6 +9,12 @@ class Logger {
     success(message) {
         console.log(`\x1b[44m[Logger: ${this.loggerName}: ${new Date()}] \nINFO: ${message}\x1b[0m`);
     }
+    blink(message) {
+        console.log(`\x1b[8m[Logger: ${this.loggerName}: ${new Date()}] \nINFO: ${message}\x1b[0m`);
+    }
+    yellow(message) {
+        console.log(`\x1b[43m[Logger: ${this.loggerName}: ${new Date()}] \nINFO: ${message}\x1b[0m`);
+    }
     warn(message) {
         console.log(`\x1b[36m[Logger: ${this.loggerName}: ${new Date()}] \nWARN: ${message}\x1b[0m`);
     }
