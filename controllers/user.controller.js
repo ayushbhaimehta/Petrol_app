@@ -127,15 +127,19 @@ async function verifyOtpController(req, res) {
             .verificationChecks
             .create({ to: `${loginInfo.countryCode}${loginInfo.phoneNo}`, code: otp });
         // .create({ to: loginInfo.phoneNo, code: otp });
-        console.log(verifiedResponse, "abc");
+        // console.log(verifiedResponse, "abc");
         if (verifiedResponse.status === 'approved') {
             log.info(`Successfully verified`);
             // const user = await getUserRole(loginInfo.phoneNo, res);
             // console.log({ user }, "Important check");
             const jwtToken = jwt.sign(
                 {
+                    "phoneNo": loginInfo.phoneNo,
                     "username": loginInfo.username,
-                }, secretKey);
+                },
+                secretKey,
+                // { expiresIn: "90d" }
+            );
             res.header('x-auth-token', jwtToken).status(200).send({
                 message: 'Otp verified',
                 phoneNo: loginInfo.phoneNo

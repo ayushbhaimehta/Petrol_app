@@ -29,5 +29,6 @@ userRouter.post('/emailSendOtp', emailOtpSendController);//underprogress
 // userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
 userRouter.post('/verifyOtp', verifyOtpController);//working
 userRouter.post('/updatedetails', updateDetailsController,);//working
+userRouter.post('/middleware', authTokenValidator)
 
 module.exports = userRouter;
