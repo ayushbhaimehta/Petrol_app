@@ -29,10 +29,18 @@ const secretKey = "12345"
 //     return await UserModel.findOne({ phoneNo: orderInfo.phoneNo });
 // }
 
+// async function getFunction(phoneNo) {
+//     console.log({ phoneNo });
+//     return await CoupanModel.findOne({ phoneNo: phoneNo });
+// }
+
 async function getAllCoupansDao(coupanInfo, res) {
     log.success('dao layer entered');
+    console.log({ coupanInfo });
     const phoneNo = coupanInfo.phoneNo;
-    await CoupanModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+    // const response = await getFunction(phoneNo);
+    // console.log({ response });
+    return await CoupanModel.find({ phoneNo: phoneNo }, (err, response) => {
         log.success('dao querry layer entered');
         if (err || !response) {
             log.error(`failed in the query in dao layer ` + err);

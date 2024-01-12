@@ -30,7 +30,7 @@ async function getAllCoupansController(req, res) {
     if (isNotValidSchema(err, res)) return;
 
     try {
-        const result = await coupanDao.getAllCoupansDao(coupanDao, res);
+        const result = await coupanDao.getAllCoupansDao(coupanInfo, res);
         return result;
     } catch (error) {
         log.error(`Error in Dao trycatch layer ` + error)
