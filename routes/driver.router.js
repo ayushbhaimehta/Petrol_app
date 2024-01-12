@@ -1,10 +1,10 @@
 const express = require('express');
 const {
-
-} = require('..')
+    addDriversController
+} = require('../controllers/driver.controller.js')
 
 const driverRouter = express.Router();
 
-driverRouter.post('/',);//working
+driverRouter.post('/addDrivers', addDriversController,);//working
 
 module.exports = driverRouter
