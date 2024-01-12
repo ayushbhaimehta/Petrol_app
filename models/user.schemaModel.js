@@ -107,17 +107,19 @@ const addAddressSchemaModel = {
 
 const sendOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
-    countryCode: Joi.string().required()
+    countryCode: Joi.string().required(),
+    username: Joi.string()
 }
 
 const sendOtpEmailSchemaModel = {
-    username: Joi.string()
+    username: Joi.string(),
 }
 
 const verifyOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
     countryCode: Joi.string().required(),
-    OTP: Joi.string().required().min(6).max(6)
+    OTP: Joi.string().required().min(6).max(6),
+    username: Joi.string()
 }
 
 mongoUserSchema.methods.encryptPassword = function () {
