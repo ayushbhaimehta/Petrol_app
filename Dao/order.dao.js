@@ -24,6 +24,11 @@ async function getAllOrdersDao(loginInfo, res) {
         })
     })
 }
+
+async function updateOrderDetailsDao(orderInfo, res) {
+    return
+}
+
 async function phoneExists(orderInfo) {
     return await UserModel.findOne({ phoneNo: orderInfo.phoneNo });
 }
@@ -145,5 +150,6 @@ async function addOrderDao(orderInfo, res) {
 
 module.exports = {
     getAllOrdersDao,
-    addOrderDao
+    addOrderDao,
+    updateOrderDetailsDao
 }

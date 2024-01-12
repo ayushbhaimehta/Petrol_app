@@ -24,6 +24,25 @@ async function addOrderController(req, res) {
     }
 }
 
+async function updateOrderDetailsController(req, res) {
+    const orderInfo = req.body;
+    console.log({ orderInfo }, "controller entered");
+    let { error } = orderValidator.validateUpdateOrderSchema(orderInfo, res);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const response = await orderDao.updateOrderDetailsDao(orderInfo, res);
+        return response;
+        // return res.status(200).send({
+        //     message: 'testing phase'
+        // })
+    } catch (error) {
+        log.error(`Error in try catch of order controller` + error);
+        return res.status(400).send({
+            message: 'Error in updating order information'
+        })
+    }
+}
+
 async function getAllOrdersController(req, res) {
     console.log("controller checkpoint");
     const loginInfo = req.params;
@@ -52,5 +71,6 @@ function isNotValidSchema(error, res) {
 
 module.exports = {
     getAllOrdersController,
-    addOrderController
+    addOrderController,
+    updateOrderDetailsController
 };

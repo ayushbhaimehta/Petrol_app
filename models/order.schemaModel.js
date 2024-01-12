@@ -8,6 +8,11 @@ const getAllOrdersSchemaModel = {
     phoneNo: Joi.string().min(10).max(10)
 }
 
+const updateOrderSchemaModel = {
+    phoneNo: Joi.string(),
+    orderID: Joi.string()
+}
+
 const addOrderSchemaModel = {
     phoneNo: Joi.string().max(10).min(10),
     order: Joi.array().items(
@@ -56,5 +61,6 @@ log.success(`order Schema model created`);
 module.exports = {
     getAllOrdersSchemaModel,
     orderModel,
-    addOrderSchemaModel
+    addOrderSchemaModel,
+    updateOrderSchemaModel
 }

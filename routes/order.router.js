@@ -1,7 +1,8 @@
 const express = require('express');
 const {
     getAllOrdersController,
-    addOrderController
+    addOrderController,
+    updateOrderDetailsController
 } = require('../controllers/order.controller.js')
 const orderRouter = express.Router();
 
@@ -10,6 +11,7 @@ const orderRouter = express.Router();
 
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
 orderRouter.post('/addOrder', addOrderController);//working
+orderRouter.post('/updateOrderDetails', updateOrderDetailsController)
 // edit order for status change assignment
 
 module.exports = orderRouter;
