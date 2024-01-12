@@ -26,7 +26,44 @@ async function getAllOrdersDao(loginInfo, res) {
 }
 
 async function updateOrderDetailsDao(orderInfo, res) {
-    return
+    const phoneNo = orderInfo.phoneNo;
+    const orderID = orderInfo.orderID;
+    const status = orderInfo.status;
+    const assignedTo = orderInfo.assignedTo;
+    const assignTiming = orderInfo.assignTiming;
+    console.log({ phoneNo }, { status }, { assignedTo }, { assignTiming });
+    // {
+    //     status: "pending"
+    //     assignedTo: "Null"
+    //     assignTiming: "null"
+    // }
+    const result = await orderModel.findOneAndUpdate(
+        {
+            phoneNo: phoneNo,
+            "order._id": orderID
+        },
+        {
+            $set: {
+                "order.$.status": status,
+                "order.$.assignedTo": assignedTo,
+                "order.$.assignTiming": assignTiming
+            }
+        },
+        { new: true, upsert: true },
+        (err, response) => {
+            if (err || !response) {
+                log.error(`Error in dao querry` + err);
+                return res.status(500).send({
+                    message: 'Error in updating order details'
+                })
+            }
+            console.log(response.order[1]);
+            log.info(`Successfully updated order Details `);
+            return res.status(200).send({
+                message: 'Successfully updated order details'
+            })
+        })
+    return result;
 }
 
 async function phoneExists(orderInfo) {

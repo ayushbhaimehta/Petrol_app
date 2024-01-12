@@ -10,7 +10,10 @@ const getAllOrdersSchemaModel = {
 
 const updateOrderSchemaModel = {
     phoneNo: Joi.string(),
-    orderID: Joi.string()
+    orderID: Joi.string(),
+    status: Joi.string(),
+    assignedTo: Joi.string(),
+    assignTiming: Joi.string(),
 }
 
 const addOrderSchemaModel = {

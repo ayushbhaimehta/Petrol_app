@@ -11,7 +11,6 @@ const orderRouter = express.Router();
 
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
 orderRouter.post('/addOrder', addOrderController);//working
-orderRouter.post('/updateOrderDetails', updateOrderDetailsController)
-// edit order for status change assignment
+orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
 
 module.exports = orderRouter;
