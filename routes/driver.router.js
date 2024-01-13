@@ -1,11 +1,14 @@
 const express = require('express');
 const {
-    addDriversController
+    addDriversController,
+    testingController
 } = require('../controllers/driver.controller.js')
 
 const driverRouter = express.Router();
 
 driverRouter.post('/addDrivers', addDriversController,);//under progress
+driverRouter.post('/testing', testingController)
+// driver login
 // edit driver orders list for adding more order ids 
 // after completion earned will be changing
 // multiple queries for completed order

@@ -1,9 +1,41 @@
 const express = require('express');
 const Logger = require('../logger/logger');
-const log = new Logger('Order_Controller');
+const log = new Logger('Driver_Controller');
 const driverValidator = require('../models/driver.validatorSchema');
-const jwt = require('jsonwebtoken');
+const driverDao = require('../Dao/driver.dao')
+const nodemailer = require("nodemailer");
+require('dotenv').config();
+// const jwt = require('jsonwebtoken');
 
+async function testingController(req, res) {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            type: 'OAuth2',
+            user: process.env.MAIL_USERNAME,
+            pass: process.env.MIL_PASSWORD,
+            clientId: process.env.OAUTH_CLIENTID,
+            clientSecret: process.env.OAUTH_CLIENT_SECRET,
+            refreshToken: process.env.OAUTH_REFRESH_TOKEN
+        }
+    });
+    let mailOptions = {
+        from: "ayushbhaimehta20002@gmail.com",
+        to: "ayushmehta0620@gmail.com",
+        subject: 'petrol testing',
+        text: 'Hi Ayush daddy is home'
+    };
+    transporter.senAdMail(mailOptions, function (err, data) {
+        if (err) {
+            console.log("Error " + err);
+            return res.status(403);
+        } else {
+            console.log(data);
+            console.log("Email sent successfully");
+            return res.status(200).send({});
+        }
+    });
+}
 
 async function addDriversController(req, res) {
     console.log("abcc");
@@ -14,7 +46,7 @@ async function addDriversController(req, res) {
     // console.log("check2");
     try {
         // console.log("check3");
-        const response = await orderDao.addDriversDao(driverInfo, res);
+        const response = await driverDao.addDriversDao(driverInfo, res);
         return response;
         // res.status(200).send({ message: "Working" })
     } catch (error) {
@@ -34,5 +66,6 @@ function isNotValidSchema(error, res) {
 }
 
 module.exports = {
-    addDriversController
+    addDriversController,
+    testingController
 };

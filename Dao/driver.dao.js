@@ -4,40 +4,19 @@ const { DriverModel } = require('../models/driverSchema');
 
 const secretKey = "12345"
 
-async function getAllCoupansDao(driverInfo, res) {
-    log.success('dao layer entered');
-    console.log({ coupanInfo });
-    const phoneNo = coupanInfo.phoneNo;
-    // const response = await getFunction(phoneNo);
-    // console.log({ response });
-    return await CoupanModel.find({ phoneNo: phoneNo }, (err, response) => {
-        log.success('dao querry layer entered');
-        if (err || !response) {
-            log.error(`failed in the query in dao layer ` + err);
-            return res.status(404).send({
-                message: 'Cannot find any coupans with given phoneNo ' + phoneNo
-            })
-        }
-        console.log({ response });
-        log.success('Successfully fetched all the coupans with given phoen no');
-        res.status(200).send({
-            message: 'Successfully fetched all the coupans',
-            result: response
-        })
-    })
-}
-
 async function addDriversDao(driverInfo, res) {
 
     console.log({ driverInfo }, " dao layer entered");
     const phoneNo = driverInfo.phoneNo;
 
+    // if driver info is not there is db
+    // new drivers 
     let newDriver = new DriverModel({
         name: driverInfo.name,
         phoneNo: phoneNo,
         assignedOrders: [
             {
-                _orderId: driverInfo._orderId,
+                _orderId: driverInfo.assignedOrders._orderId,
             }
             //orderIDs
         ],
