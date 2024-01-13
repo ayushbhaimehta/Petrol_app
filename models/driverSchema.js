@@ -5,19 +5,17 @@ const log = new Logger('Driver_SchemaModel');
 
 const addDriversSchemaModel = {
     name: Joi.string(),
-    assignedOrders: [
-        _id1,
-        _id2,
-        _id3,
-        _id4
-        //orderIDs
-    ],
+    phoneNo: Joi.string(),
+    assignedOrders: Joi.array().items(Joi.object({
+        _orderId: Joi.string(),
+    })),
     earned: Joi.string(),
     workedTime: Joi.string()
 }
 
 const mongoDriverSchema = new mongoose.Schema({
     name: String,
+    phoneNo: String,
     assignedOrders: [
         {
             _orderId: String,

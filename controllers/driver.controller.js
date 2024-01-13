@@ -8,17 +8,17 @@ const jwt = require('jsonwebtoken');
 async function addDriversController(req, res) {
     console.log("abcc");
     const driverInfo = req.body;
-    let { err } = driverValidator.validateAddDriversSchema(orderInfo, res);
+    let { err } = driverValidator.validateAddDriversSchema(driverInfo, res);
     // console.log("check");
     if (isNotValidSchema(err, res)) return;
     // console.log("check2");
     try {
         // console.log("check3");
-        const response = await orderDao.addOrderDao(orderInfo, res);
+        const response = await orderDao.addDriversDao(driverInfo, res);
         return response;
         // res.status(200).send({ message: "Working" })
     } catch (error) {
-        log.error(`Error in adding new order for phoneNO ${orderInfo.phoneNo}` + error)
+        log.error(`Error in adding new order for phoneNO ${driverInfo.phoneNo}` + error)
     }
 }
 
