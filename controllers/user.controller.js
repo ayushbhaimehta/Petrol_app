@@ -6,9 +6,17 @@ const log = new Logger('User_Controller');
 const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
 const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
 const client = require("twilio")(accountSid, authToken);
-const { UserModel } = require('../models/user.schemaModel')
+const { UserModel, UserEmailModel } = require('../models/user.schemaModel')
 const jwt = require('jsonwebtoken');
-
+const otpGenerator = require('otp-generator');
+const nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: '900gamingg@gmail.com',
+        pass: 'xixp nbhw ilzu sxga'
+    }
+});
 // const readline = require("readline");
 
 async function registerNewUser(req, res) {
@@ -64,30 +72,140 @@ const secretKey = "123456789"
 //         });
 //         // console.log({ readline });
 //     });
+async function existsEmail(req, res) {
+    const secretKey = "123456789";
 
-async function emailOtpSendController(req, res) {
+    // const loginInfo = req.body;
+    const token = req.header('x-auth-token');
+    const payload = jwt.verify(token, secretKey);
+    const phoneNo = payload.phoneNo;
+    await UserModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+        console.log({ response });
+        if (err || !response) {
+            log.error(`Error while finding an already existing email with this phoneNo`)
+            return false;
+        }
+        if (response.username) {
+            log.info(`found an existing email with this phoneNo`)
+            return true;
+        }
+        else {
+            return false;
+        }
+    })
+}
+async function verifyEmailOtp(req, res) {
+    const loginInfo = req.body;
+    if (await existsEmail(req)) {
+        return res.status(201).send({
+            message: 'Already found a email with this phoneNo'
+        })
+    }
+    const secretKey = "123456789";
+
+    // const loginInfo = req.body;
+    const token = req.header('x-auth-token');
+    const payload = jwt.verify(token, secretKey);
+    const phoneNo = payload.phoneNo;
+    const otp = loginInfo.emailOtp;
+    const name = loginInfo.name;
+    const email = loginInfo.username;
+    let { err } = userValidator.validateVerifyEmailOtpSchema(loginInfo);
+    if (isNotValidSchema(err, res)) return;
+    try {
+        const existingData = await UserEmailModel.findOne({
+            email: email,
+            emailOtp: otp
+        }, async (err, response) => {
+            console.log({ response });
+            if (err || !response) {
+                log.error(`otp not matching ` + err);
+                return res.status(500).send({
+                    message: 'wrong otp'
+                })
+            }
+            log.info(`Otp matched successfully`);
+            await UserEmailModel.findOneAndDelete({
+                email: email,
+                emailOtp: otp
+            })
+            log.info(`Otp matched and deleted`);
+            // update emaill name 
+            await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { name: name, username: email }, (err, response) => {
+                if (err | !response) {
+                    log.error(`Error in updating name and email`);
+                    return;
+                }
+                log.info(`Succesfully update name and email`)
+            })
+            return res.status(200).send({
+                message: 'Otp matched successfully and updated name and email'
+            })
+        })
+        return existingData;
+    } catch (error) {
+        log.error(`Error in verifying email otp` + error)
+    }
+}
+async function sendEmailOtp(req, res) {
+
     const loginInfo = req.body;
     const email = loginInfo.username;
     let { error } = userValidator.userValidateEmailSendOtpSchema(loginInfo);
     if (isNotValidSchema(error, res)) return;
     try {
-        const otpResponse = await client.verify.v2
-            .services("new one from sendgrid")
-            .verifications.create({
-                to: `${email}`,
-                channel: 'email',
-            })
-        console.log(otpResponse);
-        log.info(`Sucessfully sent the otp to username ${email}`);
-        return res.status(200).send({
-            message: 'Otp Sent to username' + email,
-            result: otpResponse
+        await UserEmailModel.findOneAndDelete({
+            email: email
+            // emailOtp: otp
+        }, (err, response) => {
+            console.log({ response });
+            if (err || !response) {
+                log.error(`no email found ` + err);
+            }
+            log.info(`Deleted the email and otp from db`)
         })
     } catch (error) {
-        log.error(`Error in sending the otp using twilio for username recipient ${email}`)
-        return res.status
+        log.error(`No emails found`)
+    }
+    try {
+        const emailOtp = otpGenerator.generate(6, { digits: true });
+        var mailOptions = {
+            from: 'testapp@gmail.com',
+            to: email,
+            subject: 'otp verification petrol app',
+            text: emailOtp
+        };
+        console.log({ emailOtp });
+
+        transporter.sendMail(mailOptions, async function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        })
+        const newEmailVerification = new UserEmailModel({
+            email: email,
+            emailOtp: emailOtp,
+        });
+        await newEmailVerification.save((err, response) => {
+            if (err || !response) {
+                log.error(`Error in saving otp with email in db ` + err);
+                return res.status(500).send({
+                    message: 'Error in saving otp with email in db'
+                })
+            }
+            log.info(`otp sent to email succesfully`);
+            return res.status(200).send({
+                message: `Successfully saved otp and email for verification`
+            })
+        });
+    } catch (error) {
+        console.log(`Error in sending the otp using twilio for username recipient ${email}`)
+        return res.status(400).send({})
     }
 }
+
 async function sendOtpController(req, res) {
     const loginInfo = req.body;
     let { error } = userValidator.validateSendOtpSchema(loginInfo);
@@ -112,13 +230,14 @@ async function sendOtpController(req, res) {
     }
 }
 
-async function getUserRole(phoneNo, res) {
-    return await UserModel.findOne({ phoneNo: phoneNo })
+async function check(phoneNo) {
+    return await UserModel.findOne({ phoneNo: phoneNo });
 }
 
 async function verifyOtpController(req, res) {
     const loginInfo = req.body;
     const otp = loginInfo.OTP;
+    const phoneNo = loginInfo.phoneNo;
     console.log({ loginInfo });
     let { error } = userValidator.validateVerifyOtpSchema(loginInfo);
     if (isNotValidSchema(error, res)) return;
@@ -135,15 +254,56 @@ async function verifyOtpController(req, res) {
             const jwtToken = jwt.sign(
                 {
                     "phoneNo": loginInfo.phoneNo,
-                    "username": loginInfo.username,
+                    // "username": loginInfo.username,
                 },
                 secretKey,
                 // { expiresIn: "90d" }
             );
-            res.header('x-auth-token', jwtToken).status(200).send({
-                message: 'Otp verified',
-                phoneNo: loginInfo.phoneNo
-            })
+            res.header('x-auth-token', jwtToken);
+
+            const existingUser = await check(phoneNo);
+            console.log({ existingUser });
+            if (existingUser) {
+                if (existingUser.name) {
+                    // username may exits or it may not
+                    log.info(`User already found. LoggedIn successfully`);
+                    console.log({ existingUser });
+                    return res.status(203).send({
+                        message: 'You have successfully loggedIn',
+                        // result: existingUser
+                    });
+                }
+                else {
+                    // redirect it to name and usernam waala screen
+                    return res.status(200).send({
+                        message: 'newUser',
+                        // result: resposne
+                    })
+                }
+            }
+            else {
+                // register
+                let newUser = new UserModel({
+                    name: '',
+                    username: '',
+                    phoneNo: phoneNo,
+                    address: []
+                });
+                const result = await newUser.save((err, response) => {
+                    if (err || !response) {
+                        log.error(`Error in saving new phoneNo into the db ` + err);
+                        return res.status(500).send({
+                            message: 'Error in saving phoneNo'
+                        })
+                    }
+                    log.info(`Successfully saved the phoneNo into the db`);
+                    return res.status(200).send({
+                        message: 'Phone no saved in the db!'
+                    })
+                })
+                return result;
+            }
+            // console.log("new user creation point");
         }
         else {
             res.status(400).send({
@@ -282,7 +442,8 @@ module.exports = {
     sendOtpController,
     verifyOtpController,
     addAdressController,
-    emailOtpSendController,
     updateDetailsController,
-    addressDeleteController
+    addressDeleteController,
+    sendEmailOtp,
+    verifyEmailOtp
 };

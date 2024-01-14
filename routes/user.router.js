@@ -8,27 +8,26 @@ const {
     getByPhoneNoController,
     sendOtpController,
     verifyOtpController,
-    emailOtpSendController,
     updateDetailsController,
-    addressDeleteController
+    addressDeleteController,
+    sendEmailOtp,
+    verifyEmailOtp
     // emailOtpVerifyController
 } = require('../controllers/user.controller')
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
 const userRouter = express.Router();
 
-userRouter.get('/getbyusername/:username', authTokenValidator, getByUsernameController,);//working
+// userRouter.get('/getbyusername/:username', authTokenValidator, getByUsernameController,);//working
 userRouter.get('/getbyphoneno/:phoneno', authTokenValidator, getByPhoneNoController,);//working
-userRouter.post('/register', authTokenValidator, registerNewUser);//working
-// userRouter.post('/login', loginController);
 userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//working
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working
-userRouter.delete('/deleteAddress', addressDeleteController);//working
+userRouter.delete('/deleteAddress', authTokenValidator, addressDeleteController);//working
 userRouter.post('/sendotp', sendOtpController);//working
-userRouter.post('/emailSendOtp', emailOtpSendController);//underprogress
-// userRouter.post('/emailVerifyOtp', emailOtpVerifyController);
 userRouter.post('/verifyOtp', verifyOtpController);//working
-userRouter.post('/updatedetails', updateDetailsController,);//working
+userRouter.post('/emailSendOtp', sendEmailOtp);//working
+userRouter.post('/emailVerifyOtp', verifyEmailOtp);//working
+userRouter.post('/updatedetails', updateDetailsController,);// changes need to be made
 // userRouter.post('/middleware', authTokenValidator)// just for debugging
 
 module.exports = userRouter;

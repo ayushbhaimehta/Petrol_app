@@ -4,17 +4,24 @@ const Logger = require('../logger/logger');
 const log = new Logger('Driver_SchemaModel');
 
 const addDriversSchemaModel = {
+    username: Joi.string(),
+    password: Joi.string(),
     name: Joi.string(),
     phoneNo: Joi.string(),
-    assignedOrders: Joi.array().items(Joi.object({
+    assignedOrders: {
         _orderId: Joi.string(),
-    })),
-    earned: Joi.string(),
-    workedTime: Joi.string()
+    }
+}
+
+const driverLoginSchemaModel = {
+    username: Joi.string(),
+    password: Joi.string()
 }
 
 const mongoDriverSchema = new mongoose.Schema({
     name: String,
+    username: String,
+    password: String,
     phoneNo: String,
     assignedOrders: [
         {
@@ -22,8 +29,6 @@ const mongoDriverSchema = new mongoose.Schema({
         }
         //orderIDs
     ],
-    earned: String,
-    workedTime: String
 });
 
 const DriverModel = mongoose.model('Driver', mongoDriverSchema);
@@ -32,5 +37,6 @@ log.warn(`Driver Schema model created`);
 
 module.exports = {
     addDriversSchemaModel,
-    DriverModel
+    DriverModel,
+    driverLoginSchemaModel
 }

@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const registerInputUserSchemaModel = {
     name: Joi.string().allow(''),
     username: Joi.string().allow(''),
-    phoneNo: Joi.string().max(10).min(10),
+    phoneNo: Joi.string().max(15),
     address: Joi.array().items(
         Joi.object({
             name: Joi.string(),
@@ -32,6 +32,17 @@ const deleteAddressSchemaModel = {
         vehicle: Joi.string(),
         vnumber: Joi.string().max(4).min(4)
     }
+}
+
+const mongoEmailOtp = new mongoose.Schema({
+    email: String,
+    emailOtp: String
+});
+
+const verifyEmailOtpSchemaModel = {
+    name: Joi.string(),
+    email: Joi.string().max(50),
+    emailOtp: Joi.string().max(6)
 }
 
 const mongoUserSchema = new mongoose.Schema({
@@ -130,6 +141,7 @@ mongoUserSchema.methods.encryptPassword = function () {
     });
 }
 const UserModel = mongoose.model('User', mongoUserSchema);
+const UserEmailModel = mongoose.model('Email', mongoEmailOtp);
 
 module.exports = {
     registerInputUserSchemaModel,
@@ -146,5 +158,7 @@ module.exports = {
     addAddressSchemaModel,
     sendOtpEmailSchemaModel,
     updateDetailsSchemaModel,
-    deleteAddressSchemaModel
+    deleteAddressSchemaModel,
+    UserEmailModel,
+    verifyEmailOtpSchemaModel
 }

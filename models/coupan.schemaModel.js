@@ -5,7 +5,7 @@ const log = new Logger('Coupan_SchemaModel');
 
 const addCoupanSchemaModel = {
     name: Joi.string(),
-    phoneNo: Joi.string(),
+    // phoneNo: Joi.string(),
     code: Joi.string(),
     discount: Joi.string(),
     validTill: Joi.string(),
@@ -13,12 +13,12 @@ const addCoupanSchemaModel = {
 }
 
 const getAllCoupanSchemaModel = {
-    phoneNo: Joi.string()
+    // phoneNo: Joi.string()
 }
 
 const mongoCoupanSchema = new mongoose.Schema({
     name: String,
-    phoneNo: String,
+    // phoneNo: String,
     code: String,
     discount: String,
     validTill: String,

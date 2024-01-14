@@ -37,16 +37,7 @@ async function resgisterNewUser(userObj, response) {
     console.log(ind, "array size");
     const phoneNo = userObj.phoneNo;
     console.log(phoneNo);
-    const existingUser = await UserModel.findOne({ phoneNo: phoneNo });
-    if (existingUser) {
-        log.info(`User already found. LoggedIn successfully`);
-        console.log({ existingUser });
-        return response.status(203).send({
-            message: 'You have successfully loggedIn',
-            // result: existingUser
-        });
-    }
-    console.log("new user creation point");
+
     // let newUser = new UserModel({
     //     name: userObj.name,
     //     username: userObj.username,
@@ -137,20 +128,23 @@ async function addAddressDao(loginInfo, res) {
     // const adrArray = payload.address;
     payload.address.push(adr);
     console.log(payload);
-    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { address: payload.address }, (err, response) => {
-        console.log("updatePoint");
-        if (err || !response) {
-            log.error(`Error in adding address` + err);
-            return res.status(400).send({
-                message: 'Error in adding new address'
+    const result = await UserModel.findOneAndUpdate(
+        { phoneNo: phoneNo },
+        { address: payload.address },
+        (err, response) => {
+            console.log("updatePoint");
+            if (err || !response) {
+                log.error(`Error in adding address` + err);
+                return res.status(400).send({
+                    message: 'Error in adding new address'
+                })
+            }
+            log.info(`Sucessfully added new addres in the addres array to phoneNo ${phoneNo}`);
+            // console.log(res);
+            return res.status(200).send({
+                message: 'Successfully added new address',
             })
-        }
-        log.info(`Sucessfully added new addres in the addres array to phoneNo ${phoneNo}`);
-        // console.log(res);
-        return res.status(200).send({
-            message: 'Successfully added new address',
         })
-    })
     return result;
 }
 
@@ -208,7 +202,7 @@ async function deleteAddressDao(loginInfo, res) {
                 })
             }
             log.info(`Successfully deleted the address from phoneNo ${phoneNo}'s addresses`);
-            return res.staus(200).send({
+            return res.status(200).send({
                 message: 'Successfully deleted the address'
             })
         }
@@ -255,7 +249,6 @@ async function updatePhoneNo(loginInfo, res) {
             message: `updated the phoneNo from ${phoneNo} to ${newPhoneNo}`,
             phoneNo: newPhoneNo
         })
-
     });
 }
 async function validateLoginUser(loginInfo, response) {
