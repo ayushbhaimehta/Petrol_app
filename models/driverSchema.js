@@ -42,5 +42,6 @@ log.warn(`Driver Schema model created`);
 module.exports = {
     addDriversSchemaModel,
     DriverModel,
-    driverLoginSchemaModel
+    driverLoginSchemaModel,
+    getOrdersSchemaModel
 }

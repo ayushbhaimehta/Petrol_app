@@ -6,9 +6,9 @@ const coupanDao = require('../Dao/coupan.dao')
 async function addCoupanController(req, res) {
     console.log("check");
     const coupanInfo = req.body;
-    let { err } = CoupanValidator.validateAddCoupanSchema(coupanInfo, res);
+    let { error } = CoupanValidator.validateAddCoupanSchema(coupanInfo, res);
     console.log("check");
-    if (isNotValidSchema(err, res)) return;
+    if (isNotValidSchema(error, res)) return;
     console.log("check2");
     try {
         console.log("check3");
@@ -26,8 +26,8 @@ async function addCoupanController(req, res) {
 async function getAllCoupansController(req, res) {
     log.info('controller entered');
     const coupanInfo = req.params;
-    let { err } = CoupanValidator.validateGetAllCoupansSchema(coupanInfo, res);
-    if (isNotValidSchema(err, res)) return;
+    let { error } = CoupanValidator.validateGetAllCoupansSchema(coupanInfo, res);
+    if (isNotValidSchema(error, res)) return;
 
     try {
         const result = await coupanDao.getAllCoupansDao(coupanInfo, res);

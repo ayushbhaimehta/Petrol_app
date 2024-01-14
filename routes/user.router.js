@@ -17,8 +17,8 @@ const {
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
 const userRouter = express.Router();
 
-userRouter.get('/getbyusername/:username', authTokenValidator, getByUsernameController,);//working
-userRouter.get('/getbyphoneno/:phoneno', authTokenValidator, getByPhoneNoController,);//working
+userRouter.get('/getbyusername/:username', getByUsernameController,);//working
+userRouter.get('/getbyphoneno/:phoneno', getByPhoneNoController,);//working
 userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//working
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working

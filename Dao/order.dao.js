@@ -25,6 +25,35 @@ async function getAllOrdersDao(loginInfo, res) {
     })
 }
 
+async function updateOrderStatusDao(orderInfo, res) {
+    const status = orderInfo.status;
+    const result = await orderModel.findOneAndUpdate(
+        {
+            phoneNo: phoneNo,
+            "order._id": orderID
+        },
+        {
+            $set: {
+                "order.$.status": status,
+            }
+        },
+        { new: true, upsert: true },
+        (err, response) => {
+            if (err || !response) {
+                log.error(`Error in dao querry` + err);
+                return res.status(500).send({
+                    message: 'Error in updating order status'
+                })
+            }
+            console.log(response.order[1]);
+            log.info(`Successfully updated order status `);
+            return res.status(200).send({
+                message: 'Successfully updated order status'
+            })
+        })
+    return result;
+}
+
 async function updateOrderDetailsDao(orderInfo, res) {
     const phoneNo = orderInfo.phoneNo;
     const orderID = orderInfo.orderID;
@@ -184,5 +213,6 @@ async function addOrderDao(orderInfo, res) {
 module.exports = {
     getAllOrdersDao,
     addOrderDao,
-    updateOrderDetailsDao
+    updateOrderDetailsDao,
+    updateOrderStatusDao
 }

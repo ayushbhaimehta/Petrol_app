@@ -15,8 +15,13 @@ const validateUpdateOrderSchema = (orderInfo) => {
     return Joi.validate(orderInfo, orderSchemaModel.updateOrderSchemaModel);
 }
 
+const validateUpdateOrderStatusSchema = (orderInfo) => {
+    return Joi.validate(orderInfo, orderSchemaModel.updateOrderStatusSchemaModel);
+}
+
 module.exports = {
     validateGetOrdersSchema,
     validateAddOrderSchema,
-    validateUpdateOrderSchema
+    validateUpdateOrderSchema,
+    validateUpdateOrderStatusSchema
 }

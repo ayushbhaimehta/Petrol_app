@@ -31,8 +31,25 @@ async function driverLoginDao(driverInfo, res) {
     return result;
 }
 
+async function getAllOrdersDao(driverInfo, res) {
+    const phoenNo = driverInfo;
+    const result = await DriverModel.find({}, (err, response) => {
+        if (err || !response) {
+            log.error(`error in the querry of get orders dao` + err);
+            return res.status(404).send({
+                message: 'error in fetching orders'
+            })
+        }
+        log.info(`successfully fetched orders for all drivers`);
+        return res.status(200).send({
+            message: 'Successfully fetched all orders',
+            result: response
+        })
+    })
+}
+
 async function getordersDao(driverInfo, res) {
-    const phoneNo = driverInfo.phoneNo;
+    const phoneNo = driverInfo;
     const result = await DriverModel.findOne({ phoneNo: phoneNo }, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
@@ -55,13 +72,7 @@ async function addDriversDao(driverInfo, res) {
     const phoneNo = driverInfo.phoneNo;
 
     await DriverModel.findOne({ phoneNo: phoneNo }, (err, response) => {
-        if (!err || response) {
-            return res.status(409).send({
-                message: 'driver already exists with this phoneNo',
-                result: response
-            })
-        }
-        else {
+        if (err || !response) {
             let newDriver = new DriverModel({
                 name: driverInfo.name,
                 username: driverInfo.username,
@@ -87,11 +98,18 @@ async function addDriversDao(driverInfo, res) {
             }
             registerNewUser();
         }
+        else {
+            return res.status(409).send({
+                message: 'driver already exists with this phoneNo',
+                result: response
+            })
+        }
     })
 }
 
 module.exports = {
     addDriversDao,
     driverLoginDao,
-    getordersDao
+    getordersDao,
+    getAllOrdersDao
 }

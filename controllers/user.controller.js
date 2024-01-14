@@ -322,8 +322,6 @@ async function verifyOtpController(req, res) {
 async function getByPhoneNoController(req, res) {
     const loginInfo = req.params.phoneno;
     console.log(loginInfo);
-    let { err } = userValidator.validateGetByPhoneNo(loginInfo, res);
-    if (isNotValidSchema(err, res)) return;
     try {
         console.log("checkpoint2");
         const response = await userDao.getByPhoneNo(loginInfo, res);
@@ -349,8 +347,8 @@ async function updateAddress(req, res) {
 
 async function addAdressController(req, res) {
     const loginInfo = req.body;
-    let { err } = userValidator.validateAddaddressSchema(loginInfo, res);
-    if (isNotValidSchema(err, res)) return;
+    let { error } = userValidator.validateAddaddressSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
     try {
         console.log("checkpoint 1");
         const result = await userDao.addAddressDao(loginInfo, res);
@@ -409,8 +407,8 @@ async function updateNameController(req, res) {
 async function updatePhoneController(req, res) {
     const loginInfo = req.body;
     console.log(loginInfo);
-    let { err } = userValidator.ValidatorUpdatePhoneSchema(loginInfo, res);
-    if (isNotValidSchema(err, res)) return;
+    let { error } = userValidator.ValidatorUpdatePhoneSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
     try {
         console.log("checkpoint2");
         const response = await userDao.updatePhoneNo(loginInfo, res);
@@ -424,9 +422,7 @@ async function getByUsernameController(req, res) {
     console.log({ req });
     const loginInfo = req.params.username;
     console.log(loginInfo);
-    let { err } = userValidator.validateGetUsernameSchema(loginInfo, res);
-    console.log(" checkpoint");
-    if (isNotValidSchema(err, res)) return;
+
     try {
         const response = await userDao.getByUsername(loginInfo, res);
         return response;

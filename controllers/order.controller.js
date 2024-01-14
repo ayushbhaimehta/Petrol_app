@@ -10,9 +10,9 @@ const jwt = require('jsonwebtoken');
 async function addOrderController(req, res) {
     console.log("abcc");
     const orderInfo = req.body;
-    let { err } = orderValidator.validateAddOrderSchema(orderInfo, res);
+    let { error } = orderValidator.validateAddOrderSchema(orderInfo, res);
     // console.log("check");
-    if (isNotValidSchema(err, res)) return;
+    if (isNotValidSchema(error, res)) return;
     // console.log("check2");
     try {
         // console.log("check3");
@@ -43,12 +43,28 @@ async function updateOrderDetailsController(req, res) {
     }
 }
 
+async function updateOrderStatusController(req, res) {
+    const orderInfo = req.body;
+    let { error } = orderValidator.validateUpdateOrderStatusSchema(orderInfo, res);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const response = await orderDao.updateOrderStatusDao(orderInfo, res);
+        return response;
+        // return res.status(200).send({
+        //     message: 'testing phase'
+        // })
+    } catch (error) {
+        log.error(`Error in try catch of order controller` + error);
+        return res.status(400).send({
+            message: 'Error in updating order information'
+        })
+    }
+}
+
 async function getAllOrdersController(req, res) {
     console.log("controller checkpoint");
     const loginInfo = req.params;
     console.log({ loginInfo });
-    let { error } = orderValidator.validateGetOrdersSchema(loginInfo, res);
-    if (isNotValidSchema(error, res)) return;
     try {
         console.log(" Dao entering checkpoint");
         const response = await orderDao.getAllOrdersDao(loginInfo, res);
@@ -72,5 +88,6 @@ function isNotValidSchema(error, res) {
 module.exports = {
     getAllOrdersController,
     addOrderController,
-    updateOrderDetailsController
+    updateOrderDetailsController,
+    updateOrderStatusController
 };

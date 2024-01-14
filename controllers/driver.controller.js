@@ -8,9 +8,9 @@ require('dotenv').config();
 
 async function driverLoginController(req, res) {
     const driverInfo = req.body;
-    let { err } = driverValidator.validateLoginDriverSchema(driverInfo, res);
+    let { error } = driverValidator.validateLoginDriverSchema(driverInfo, res);
     // console.log("check");
-    if (isNotValidSchema(err, res)) return;
+    if (isNotValidSchema(error, res)) return;
 
     try {
         const result = await driverDao.driverLoginDao(driverInfo, res);
@@ -20,17 +20,25 @@ async function driverLoginController(req, res) {
     }
 }
 
-async function getOrdersController(req, res) {
-    const driverInfo = req.params;
-    let { error } = driverValidator.validateGetOrdersSchema(driverInfo, res);
-    if (isNotValidSchema(error, res)) return;
+async function getAllOrdersController(req, res) {
+    const driverInfo = req.params.phoneNo;
+    try {
+        const result = await driverDao.getAllOrdersDao(driverInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in the controller of getall orders`)
+    }
+}
 
+async function getOrdersController(req, res) {
+    // console.log(req);
+    const driverInfo = req.params.phoneNo;
+    console.log("flagger");
     try {
         const result = await driverDao.getordersDao(driverInfo, res);
         return result;
     } catch (error) {
         log.error(`Error in the getorderscontroller`);
-        return res.status(400).send({});
     }
 }
 
@@ -66,5 +74,6 @@ function isNotValidSchema(error, res) {
 module.exports = {
     addDriversController,
     driverLoginController,
-    getOrdersController
+    getOrdersController,
+    getAllOrdersController
 };

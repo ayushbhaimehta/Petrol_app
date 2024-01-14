@@ -2,7 +2,8 @@ const express = require('express');
 const {
     getAllOrdersController,
     addOrderController,
-    updateOrderDetailsController
+    updateOrderDetailsController,
+    updateOrderStatusController
 } = require('../controllers/order.controller.js')
 const orderRouter = express.Router();
 
@@ -12,5 +13,6 @@ const orderRouter = express.Router();
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
 orderRouter.post('/addOrder', addOrderController);//working
 orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
+orderRouter.post('/updateOrderStatus', updateOrderStatusController)//working
 
 module.exports = orderRouter;
