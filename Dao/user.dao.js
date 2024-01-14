@@ -211,11 +211,32 @@ async function deleteAddressDao(loginInfo, res) {
     // return res.status(200).send({ message: 'testing phase' })
 }
 
-async function updateDetailsDao(loginInfo, res) {
+async function updateUsernameDao(loginInfo, res) {
+    console.log({ loginInfo });
+    const phoneNo = loginInfo.phoneNo;
+    const name = loginInfo.name;
+
+    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { name: name },
+        (err, response) => {
+            if (err || !response) {
+                log.error(`Error throw from querry while updating the name`)
+                return res.status(404).send({
+                    message: 'Error while updating the name'
+                })
+            }
+            log.info(`Successfully updated the name`);
+            return res.status(200).send({
+                message: 'Successfully updated the name'
+            })
+        }
+    )
+    return result;
+}
+
+async function updateUsernameDao(loginInfo, res) {
     const phoneNo = loginInfo.phoneNo;
     const username = loginInfo.username;
-    const name = loginInfo.name;
-    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { username: username, name: name }, (error, response) => {
+    const result = await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { username: username }, (error, response) => {
         console.log("querry point");
         if (error || !response) {
             log.error(`Error while updating the user details ` + error)
@@ -228,7 +249,7 @@ async function updateDetailsDao(loginInfo, res) {
             message: `Updated the user details for the phoneNo ${phoneNo}`
         })
     })
-    return result
+    return result;
 }
 
 async function updatePhoneNo(loginInfo, res) {
@@ -274,6 +295,7 @@ module.exports = {
     updatePhoneNo,
     updateAddressDao,
     addAddressDao,
-    updateDetailsDao,
-    deleteAddressDao
+    updateUsernameDao,
+    deleteAddressDao,
+    updateUsernameDao
 }

@@ -18,6 +18,10 @@ const validateAddressDeleteSchema = (loginInfo) => {
     return Joi.validate(loginInfo, userSchemaModel.deleteAddressSchemaModel);
 }
 
+const validateUpdateNameSchema = (loginInfo) => {
+    return Joi.validate(loginInfo, userSchemaModel.updateNameSchemaModel);
+}
+
 const validateUpdateDetailsSchema = (loginInfo) => {
     return Joi.validate(loginInfo, userSchemaModel.updateDetailsSchemaModel);
 }
@@ -74,5 +78,6 @@ module.exports = {
     userValidateEmailSendOtpSchema,
     validateUpdateDetailsSchema,
     validateAddressDeleteSchema,
-    validateVerifyEmailOtpSchema
+    validateVerifyEmailOtpSchema,
+    validateUpdateNameSchema
 }

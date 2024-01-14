@@ -32,11 +32,7 @@ async function updateOrderDetailsDao(orderInfo, res) {
     const assignedTo = orderInfo.assignedTo;
     const assignTiming = orderInfo.assignTiming;
     console.log({ phoneNo }, { status }, { assignedTo }, { assignTiming });
-    // {
-    //     status: "pending"
-    //     assignedTo: "Null"
-    //     assignTiming: "null"
-    // }
+
     const result = await orderModel.findOneAndUpdate(
         {
             phoneNo: phoneNo,

@@ -31,6 +31,24 @@ async function driverLoginDao(driverInfo, res) {
     return result;
 }
 
+async function getordersDao(driverInfo, res) {
+    const phoneNo = driverInfo.phoneNo;
+    const result = await DriverModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+        if (err || !response) {
+            log.error(`error in the querry of get orders dao` + err);
+            return res.status(404).send({
+                message: 'error in fetching orders'
+            })
+        }
+        log.info(`successfully fetched orders for the driver with phoneNO ${phoneNo}`);
+        return res.status(200).send({
+            message: 'Successfully fetched all orders',
+            result: response
+        })
+    })
+    return result;
+}
+
 async function addDriversDao(driverInfo, res) {
 
     console.log({ driverInfo }, " dao layer entered");
@@ -74,5 +92,6 @@ async function addDriversDao(driverInfo, res) {
 
 module.exports = {
     addDriversDao,
-    driverLoginDao
+    driverLoginDao,
+    getordersDao
 }

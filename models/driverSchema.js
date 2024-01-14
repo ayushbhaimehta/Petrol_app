@@ -13,6 +13,10 @@ const addDriversSchemaModel = {
     }
 }
 
+const getOrdersSchemaModel = {
+    phoneNo: Joi.string()
+}
+
 const driverLoginSchemaModel = {
     username: Joi.string(),
     password: Joi.string()

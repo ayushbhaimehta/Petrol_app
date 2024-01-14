@@ -82,7 +82,11 @@ const getByUsernameSchema = {
 const updateDetailsSchemaModel = {
     phoneNo: Joi.string(),
     username: Joi.string(),
+}
+
+const updateNameSchemaModel = {
     name: Joi.string(),
+    phoneNo: Joi.string()
 }
 
 const updatePhoneSchemaModel = {
@@ -119,7 +123,6 @@ const addAddressSchemaModel = {
 const sendOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
     countryCode: Joi.string().required(),
-    username: Joi.string()
 }
 
 const sendOtpEmailSchemaModel = {
@@ -130,7 +133,6 @@ const verifyOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
     countryCode: Joi.string().required(),
     OTP: Joi.string().required().min(6).max(6),
-    username: Joi.string()
 }
 
 mongoUserSchema.methods.encryptPassword = function () {
@@ -160,5 +162,6 @@ module.exports = {
     updateDetailsSchemaModel,
     deleteAddressSchemaModel,
     UserEmailModel,
-    verifyEmailOtpSchemaModel
+    verifyEmailOtpSchemaModel,
+    updateNameSchemaModel
 }

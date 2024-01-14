@@ -6,36 +6,6 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 // const jwt = require('jsonwebtoken');
 
-async function testingController(req, res) {
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            type: 'OAuth2',
-            user: process.env.MAIL_USERNAME,
-            pass: process.env.MIL_PASSWORD,
-            clientId: process.env.OAUTH_CLIENTID,
-            clientSecret: process.env.OAUTH_CLIENT_SECRET,
-            refreshToken: process.env.OAUTH_REFRESH_TOKEN
-        }
-    });
-    let mailOptions = {
-        from: "ayushbhaimehta20002@gmail.com",
-        to: "ayushmehta0620@gmail.com",
-        subject: 'petrol testing',
-        text: 'Hi Ayush daddy is home'
-    };
-    transporter.senAdMail(mailOptions, function (err, data) {
-        if (err) {
-            console.log("Error " + err);
-            return res.status(403);
-        } else {
-            console.log(data);
-            console.log("Email sent successfully");
-            return res.status(200).send({});
-        }
-    });
-}
-
 async function driverLoginController(req, res) {
     const driverInfo = req.body;
     let { err } = driverValidator.validateLoginDriverSchema(driverInfo, res);
@@ -47,6 +17,20 @@ async function driverLoginController(req, res) {
         return result;
     } catch (error) {
         log.error(`Error in loggin in the driver`);
+    }
+}
+
+async function getOrdersController(req, res) {
+    const driverInfo = req.params;
+    let { error } = driverValidator.validateGetOrdersSchema(driverInfo, res);
+    if (isNotValidSchema(error, res)) return;
+
+    try {
+        const result = await driverDao.getordersDao(driverInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in the getorderscontroller`);
+        return res.status(400).send({});
     }
 }
 
@@ -81,6 +65,6 @@ function isNotValidSchema(error, res) {
 
 module.exports = {
     addDriversController,
-    testingController,
-    driverLoginController
+    driverLoginController,
+    getOrdersController
 };

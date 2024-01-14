@@ -110,8 +110,8 @@ async function verifyEmailOtp(req, res) {
     const otp = loginInfo.emailOtp;
     const name = loginInfo.name;
     const email = loginInfo.username;
-    let { err } = userValidator.validateVerifyEmailOtpSchema(loginInfo);
-    if (isNotValidSchema(err, res)) return;
+    let { error } = userValidator.validateVerifyEmailOtpSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
     try {
         const existingData = await UserEmailModel.findOne({
             email: email,
@@ -376,20 +376,33 @@ async function addressDeleteController(req, res) {
     }
 }
 
-async function updateDetailsController(req, res) {
+async function updateUsernameController(req, res) {
     const loginInfo = req.body;
     console.log({ loginInfo });
     let { error } = userValidator.validateUpdateDetailsSchema(loginInfo, res);
     if (isNotValidSchema(error, res)) return;
     try {
         console.log("validation and schema done");
-        const result = await userDao.updateDetailsDao(loginInfo, res);
+        const result = await userDao.updateUsernameDao(loginInfo, res);
         return result;
     } catch (error) {
         log.error(`Error in updating user details` + error);
         return res.status(500).send({
             message: 'Something went wrong with updating the user details'
         })
+    }
+}
+
+async function updateNameController(req, res) {
+    const loginInfo = req.body;
+    let { error } = userValidator.validateUpdateNameSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
+
+    try {
+        const result = await userDao.updateUsernameDao(loginInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in controller while updating name` + error)
     }
 }
 
@@ -442,8 +455,9 @@ module.exports = {
     sendOtpController,
     verifyOtpController,
     addAdressController,
-    updateDetailsController,
+    updateUsernameController,
     addressDeleteController,
     sendEmailOtp,
-    verifyEmailOtp
+    verifyEmailOtp,
+    updateNameController
 };
