@@ -17,6 +17,11 @@ const getOrdersSchemaModel = {
     phoneNo: Joi.string()
 }
 
+const updateDriverSchemaModel = {
+    phoneNo: Joi.string(),
+    _orderId: Joi.string()
+}
+
 const adminLoginSchemaModel = {
     username: Joi.string(),
     password: Joi.string()
@@ -49,5 +54,6 @@ module.exports = {
     DriverModel,
     driverLoginSchemaModel,
     getOrdersSchemaModel,
-    adminLoginSchemaModel
+    adminLoginSchemaModel,
+    updateDriverSchemaModel
 }

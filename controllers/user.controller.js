@@ -1,4 +1,3 @@
-const express = require('express');
 const userValidator = require('../models/userSchema.validator');
 const userDao = require('../Dao/user.dao');
 const Logger = require('../logger/logger');

@@ -4,7 +4,8 @@ const {
     driverLoginController,
     getOrdersController,
     getAllOrdersController,
-    adminLoginController
+    adminLoginController,
+    updateAssignedOrdersController
 } = require('../controllers/driver.controller.js')
 
 const driverRouter = express.Router();
@@ -17,7 +18,7 @@ driverRouter.post('/addDrivers', addDriversController,);//frist driver
 driverRouter.get('/getOrders/:phoneNo', getOrdersController);
 driverRouter.post('/login', driverLoginController);//working
 driverRouter.get('/getAllorders/:phoneNo', getAllOrdersController);
-// update driver details
+driverRouter.post('/updateAssignedOrders', updateAssignedOrdersController);//working
 // multiple queries for completed order
 // petrol only
 // diesel only 

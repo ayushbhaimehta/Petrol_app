@@ -1,6 +1,7 @@
 const Logger = require('../logger/logger');
 const log = new Logger('Driver_Dao');
 const { DriverModel } = require('../models/driverSchema');
+const bcrypt = require('bcrypt');
 
 const secretKey = "12345";
 
@@ -9,14 +10,15 @@ async function adminLoginDao(driverInfo, res) {
     const password = driverInfo.password;
 
     const result = await DriverModel.findOne({ username: username },
-        (err, response) => {
+        async (err, response) => {
             if (err || !response) {
                 log.error(`error in finding the username` + err);
                 res.status(404).send({
                     message: 'error in logging in!'
                 })
             }
-            if (response.password !== password) {
+            const isPasswordCorrect = await bcrypt.compare(password, response.password);
+            if (!isPasswordCorrect) {
                 log.info(`Incorrect password`);
                 return res.status(400).send({
                     message: 'incorrect password'
@@ -36,14 +38,15 @@ async function driverLoginDao(driverInfo, res) {
     const password = driverInfo.password;
 
     const result = await DriverModel.findOne({ username: username },
-        (err, response) => {
+        async (err, response) => {
             if (err || !response) {
                 log.error(`error in finding the username` + err);
                 res.status(404).send({
                     message: 'error in logging in!'
                 })
             }
-            if (response.password !== password) {
+            const isPasswordCorrect = await bcrypt.compare(password, response.password);
+            if (!isPasswordCorrect) {
                 log.info(`Incorrect password`);
                 return res.status(400).send({
                     message: 'incorrect password'
@@ -52,6 +55,48 @@ async function driverLoginDao(driverInfo, res) {
             return res.status(200).send({
                 message: 'Logged In successfully!',
                 result: response
+            })
+        })
+    return result;
+}
+
+async function updateDriverDao(driverInfo, res) {
+    console.log("check 2");
+    const phoneNo = driverInfo.phoneNo;
+    const _orderId = driverInfo._orderId;
+    const payload = await DriverModel.findOne({ phoneNo: phoneNo },
+        async (err, response) => {
+            if (err || !response) {
+                log.error(`Cannot find a driver with this phoneNo` + err);
+                return res.status(404).send({
+                    message: 'Can not find a driver with this phoneNo'
+                })
+            }
+        })
+    console.log({ payload });
+    // const adrArray = payload.address;
+    const temp = {
+        _orderId: _orderId
+    }
+    payload.assignedOrders.push(temp);
+    // console.log(payload);
+    const array = payload.assignedOrders;
+    console.log({ array });
+    const result = await DriverModel.findOneAndUpdate(
+        { phoneNo: phoneNo },
+        { assignedOrders: payload.assignedOrders },
+        (err, response) => {
+            console.log("updatePoint");
+            if (err || !response) {
+                log.error(`Error in adding new order to a driver` + err);
+                return res.status(400).send({
+                    message: 'Error in adding new order to a driver'
+                })
+            }
+            log.info(`Sucessfully added new order to phoneNo ${phoneNo}`);
+            // console.log(res);
+            return res.status(200).send({
+                message: 'Successfully added new order',
             })
         })
     return result;
@@ -98,7 +143,7 @@ async function addDriversDao(driverInfo, res) {
     console.log({ driverInfo }, " dao layer entered");
     const phoneNo = driverInfo.phoneNo;
 
-    await DriverModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+    await DriverModel.findOne({ phoneNo: phoneNo }, async (err, response) => {
         if (err || !response) {
             let newDriver = new DriverModel({
                 name: driverInfo.name,
@@ -107,6 +152,7 @@ async function addDriversDao(driverInfo, res) {
                 phoneNo: phoneNo,
                 assignedOrders: [{ _orderId: driverInfo.assignedOrders._orderId, }],
             })
+            newDriver.password = await bcrypt.hash(driverInfo.password, 12);
             console.log({ newDriver });
             async function registerNewUser() {
                 const result = await newDriver.save((err, response) => {
@@ -139,5 +185,6 @@ module.exports = {
     driverLoginDao,
     getordersDao,
     getAllOrdersDao,
-    adminLoginDao
+    adminLoginDao,
+    updateDriverDao
 }

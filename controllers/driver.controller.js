@@ -74,6 +74,19 @@ async function addDriversController(req, res) {
     // return res.send("testing")
 }
 
+async function updateAssignedOrdersController(req, res) {
+    const driverInfo = req.body;
+    let { error } = driverValidator.validateUpdateDriverOrderSchema(driverInfo, res);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        console.log("checkpoint 1");
+        const result = await driverDao.updateDriverDao(driverInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in adding new order ` + error)
+    }
+}
+
 function isNotValidSchema(error, res) {
     if (error) {
         log.error(`Schema validation error:${error.details[0].message}`);
@@ -90,5 +103,6 @@ module.exports = {
     driverLoginController,
     getOrdersController,
     getAllOrdersController,
-    adminLoginController
+    adminLoginController,
+    updateAssignedOrdersController
 };
