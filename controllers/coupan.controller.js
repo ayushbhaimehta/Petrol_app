@@ -1,6 +1,6 @@
 const CoupanValidator = require('../models/coupan.schema.validator');
 const Logger = require('../logger/logger');
-const log = new Logger('Order_Controller');
+const log = new Logger('Coupan_Controller');
 const coupanDao = require('../Dao/coupan.dao')
 
 async function addCoupanController(req, res) {

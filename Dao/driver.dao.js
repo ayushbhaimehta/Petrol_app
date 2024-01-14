@@ -4,6 +4,32 @@ const { DriverModel } = require('../models/driverSchema');
 
 const secretKey = "12345";
 
+async function adminLoginDao(driverInfo, res) {
+    const username = driverInfo.username;
+    const password = driverInfo.password;
+
+    const result = await DriverModel.findOne({ username: username },
+        (err, response) => {
+            if (err || !response) {
+                log.error(`error in finding the username` + err);
+                res.status(404).send({
+                    message: 'error in logging in!'
+                })
+            }
+            if (response.password !== password) {
+                log.info(`Incorrect password`);
+                return res.status(400).send({
+                    message: 'incorrect password'
+                })
+            }
+            return res.status(200).send({
+                message: 'Logged In successfully!',
+                result: response
+            })
+        })
+    return result;
+}
+
 async function driverLoginDao(driverInfo, res) {
     console.log({ driverInfo });
     const username = driverInfo.username;
@@ -32,7 +58,7 @@ async function driverLoginDao(driverInfo, res) {
 }
 
 async function getAllOrdersDao(driverInfo, res) {
-    const phoenNo = driverInfo;
+    const phoneNo = driverInfo;
     const result = await DriverModel.find({}, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
@@ -46,6 +72,7 @@ async function getAllOrdersDao(driverInfo, res) {
             result: response
         })
     })
+    return result;
 }
 
 async function getordersDao(driverInfo, res) {
@@ -111,5 +138,6 @@ module.exports = {
     addDriversDao,
     driverLoginDao,
     getordersDao,
-    getAllOrdersDao
+    getAllOrdersDao,
+    adminLoginDao
 }

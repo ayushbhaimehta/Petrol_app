@@ -3,10 +3,14 @@ const {
     addDriversController,
     driverLoginController,
     getOrdersController,
-    getAllOrdersController
+    getAllOrdersController,
+    adminLoginController
 } = require('../controllers/driver.controller.js')
 
 const driverRouter = express.Router();
+
+driverRouter.post('/adminlogin', adminLoginController);//working
+
 
 driverRouter.post('/addDrivers', addDriversController,);//frist driver
 // driverRouter.post('/testing', testingController)//working

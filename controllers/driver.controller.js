@@ -6,6 +6,20 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 // const jwt = require('jsonwebtoken');
 
+async function adminLoginController(req, res) {
+    const driverInfo = req.body;
+    let { error } = driverValidator.validateLoginAdminSchema(driverInfo, res);
+    // console.log("check");
+    if (isNotValidSchema(error, res)) return;
+
+    try {
+        const result = await driverDao.adminLoginDao(driverInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in loggin in the driver`);
+    }
+}
+
 async function driverLoginController(req, res) {
     const driverInfo = req.body;
     let { error } = driverValidator.validateLoginDriverSchema(driverInfo, res);
@@ -75,5 +89,6 @@ module.exports = {
     addDriversController,
     driverLoginController,
     getOrdersController,
-    getAllOrdersController
+    getAllOrdersController,
+    adminLoginController
 };

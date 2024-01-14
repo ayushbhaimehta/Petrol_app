@@ -17,6 +17,11 @@ const getOrdersSchemaModel = {
     phoneNo: Joi.string()
 }
 
+const adminLoginSchemaModel = {
+    username: Joi.string(),
+    password: Joi.string()
+}
+
 const driverLoginSchemaModel = {
     username: Joi.string(),
     password: Joi.string()
@@ -43,5 +48,6 @@ module.exports = {
     addDriversSchemaModel,
     DriverModel,
     driverLoginSchemaModel,
-    getOrdersSchemaModel
+    getOrdersSchemaModel,
+    adminLoginSchemaModel
 }
