@@ -5,13 +5,13 @@ const validateFuelSchema = (fuelInfo) => {
     return Joi.validate(fuelInfo, fuelSchemaModel.addFuelSchemaModel);
 }
 
-// const validateGetAllCoupansSchema = (coupanInfo) => {
-//     return Joi.validate(coupanInfo, coupanSchemaModel.getAllCoupanSchemaModel);
-// }
+const validateUpdateFuelSchema = (fuelInfo) => {
+    return Joi.validate(fuelInfo, fuelSchemaModel.updateFuelSchemaModel);
+}
 
 module.exports = {
     validateFuelSchema,
-    // validateGetAllCoupansSchema
+    validateUpdateFuelSchema
 }
 
 validateFuelSchema

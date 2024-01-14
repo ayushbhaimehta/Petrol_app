@@ -22,18 +22,33 @@ async function createFuelController(req, res) {
     }
 }
 
-async function getAllCoupansController(req, res) {
+async function getAllfuelsController(req, res) {
     log.info('controller entered');
-    const coupanInfo = req.params;
-    let { error } = CoupanValidator.validateGetAllCoupansSchema(coupanInfo, res);
-    if (isNotValidSchema(error, res)) return;
-
+    const fuelInfo = req.params.phoneNo;
     try {
-        const result = await coupanDao.getAllCoupansDao(coupanInfo, res);
+        const result = await fuelDao.getAllfuels(fuelInfo, res);
         return result;
     } catch (error) {
         log.error(`Error in Dao trycatch layer ` + error)
     }
+}
+
+async function updateFuelController(req, res) {
+    const fuelInfo = req.body;
+    let { error } = FuelValidator.validateUpdateFuelSchema(fuelInfo, res);
+    console.log("check");
+    if (isNotValidSchema(error, res)) return;
+    try {
+        console.log("validation and schema done");
+        const result = await fuelDao.updateFuelDao(fuelInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in updating user details` + error);
+        return res.status(500).send({
+            message: 'Something went wrong with updating the user details'
+        })
+    }
+
 }
 
 function isNotValidSchema(error, res) {
@@ -49,5 +64,6 @@ function isNotValidSchema(error, res) {
 
 module.exports = {
     createFuelController,
-    getAllCoupansController
+    getAllfuelsController,
+    updateFuelController
 };
