@@ -25,7 +25,15 @@ async function adminLoginDao(driverInfo, res) {
                     message: 'incorrect password'
                 })
             }
-            return res.status(200).send({
+            const jwtToken = jwt.sign(
+                {
+                    "username": username,
+                    "password": password
+                },
+                secretKey,
+                // { expiresIn: "90d" }
+            );
+            return res.header('x-auth-token', jwtToken).status(200).send({
                 message: 'Logged In successfully!',
                 result: response
             })
@@ -53,7 +61,15 @@ async function driverLoginDao(driverInfo, res) {
                     message: 'incorrect password'
                 })
             }
-            return res.status(200).send({
+            const jwtToken = jwt.sign(
+                {
+                    "username": username,
+                    "password": password
+                },
+                secretKey,
+                // { expiresIn: "90d" }
+            );
+            return res.header('x-auth-token', jwtToken).status(200).send({
                 message: 'Logged In successfully!',
                 result: response
             })
@@ -73,6 +89,16 @@ async function updateDriverDao(driverInfo, res) {
                     message: 'Can not find a driver with this phoneNo'
                 })
             }
+            // when we found array of assigned orders
+            // for(then get the details of that order)
+            // use another nested loop to check
+            // if(abs(response.assignedOrder[j].prefferedTime-response.assignedOrder[i]))
+            // is less 1 hour according to ISO date format then dont add for that time
+            // let count = 0;
+            // for (let i = 0; i < response.assignedOrders.length; i++) {
+            //     const adrId = response.assignedOrders[i]._orderId;
+
+            // }
         })
     console.log({ payload });
     // const adrArray = payload.address;

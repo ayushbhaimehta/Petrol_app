@@ -7,25 +7,26 @@ const {
     adminLoginController,
     updateAssignedOrdersController,
     getOnlyPetrolController
-} = require('../controllers/driver.controller.js')
+} = require('../controllers/driver.controller.js');
+const { driverTokenValidator } = require('../middlewares/driverTokenValidator.js');
+const { adminTokenValidator } = require('../middlewares/adminTokenValidator.js')
 
 const driverRouter = express.Router();
 
+//admin
 driverRouter.post('/adminlogin', adminLoginController);//working
+driverRouter.post('/addDrivers', adminTokenValidator, addDriversController,);//frist driver
 
 
-driverRouter.post('/addDrivers', addDriversController,);//frist driver
 // driverRouter.post('/testing', testingController)//working
 driverRouter.get('/getOrders/:phoneNo', getOrdersController);
 driverRouter.post('/login', driverLoginController);//working
 driverRouter.get('/getAllorders/:phoneNo', getAllOrdersController);
-driverRouter.post('/updateAssignedOrders', updateAssignedOrdersController);//working
+driverRouter.post('/updateAssignedOrders',
+    driverTokenValidator,
+    updateAssignedOrdersController);//working
 // multiple queries for completed order
 // petrol only
 driverRouter.get('/getOnlyPetrol/:phoneNo', getOnlyPetrolController)
-// diesel only 
-// premium only
-// active orders
-// pending orders
 
 module.exports = driverRouter

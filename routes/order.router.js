@@ -5,18 +5,23 @@ const {
     updateOrderDetailsController,
     updateOrderStatusController,
     getByIdController
-} = require('../controllers/order.controller.js')
+} = require('../controllers/order.controller.js');
+const { authTokenValidator } = require('../middlewares/authTokenValidator');
+const { driverTokenValidator } = require('../middlewares/driverTokenValidator.js');
+const { adminTokenValidator } = require('../middlewares/adminTokenValidator.js');
+
 const orderRouter = express.Router();
 
-// const { otpService } = require('../Dao/user.dao')
-// const { authTokenValidator } = require('../middlewares/authTokenValidator');
-
+// user
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
-orderRouter.post('/addOrder', addOrderController);//working
+orderRouter.post('/addOrder', authTokenValidator, addOrderController);//working
 // getBy Id
 orderRouter.get('/getOrderById/:_orderId', getByIdController)
-orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
-orderRouter.post('/updateOrderStatus', updateOrderStatusController)//working
+//admin
+orderRouter.post('/updateOrderDetails', adminTokenValidator, updateOrderDetailsController)//working
+
+// driver
+orderRouter.post('/updateOrderStatus', driverTokenValidator, updateOrderStatusController)//working
 
 
 module.exports = orderRouter;

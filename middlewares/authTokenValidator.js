@@ -15,6 +15,14 @@ function authTokenValidator(req, res, next) {
         console.log({ payload });
         // const username = payload.username;
         const phoneNo = payload.phoneNo;
+        if (req.method === 'GET' && phoneNo !== req.params.phoneNo) {
+            console.log("middleware check for validation");
+            log.error(`username or phoneNo not matching with token`);
+            return res.status(403).send({
+                message: 'Validation error with token'
+            })
+        }
+        // console.log({ req });
         // console.log(req.body.phoneNo, " req flagger");
         // console.log(req.body.username, " req flagger for middleware");
         // if (phoneNo !== req.body.phoneNo && username !== req.body.username) {

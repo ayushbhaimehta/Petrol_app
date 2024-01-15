@@ -43,6 +43,7 @@ const mongoDriverSchema = new mongoose.Schema({
         }
         //orderIDs
     ],
+    role: String
 });
 
 const DriverModel = mongoose.model('Driver', mongoDriverSchema);
