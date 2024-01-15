@@ -5,8 +5,8 @@ const { UserModel } = require('../models/user.schemaModel')
 
 const secretKey = "12345"
 
-async function getAllOrdersDao(loginInfo, res) {
-    const phoneNo = loginInfo.phoneNo;
+async function getAllOrdersDao(orderInfo, res) {
+    const phoneNo = orderInfo.phoneNo;
     console.log({ phoneNo });
     await orderModel.findOne({ phoneNo: phoneNo }, (err, response) => {
         console.log("checkpoint3");
@@ -23,6 +23,30 @@ async function getAllOrdersDao(loginInfo, res) {
             message: `Found a order with phoneno ${phoneNo}`
         })
     })
+}
+
+async function getOrdersByIdDao(orderInfo, res) {
+    const _orderId = orderInfo._orderId;
+    console.log({ _orderId });
+    await orderModel.findOne(
+        {
+            'order._id': _orderId,
+        },
+        (err, response) => {
+            console.log("checkpoint3");
+            if (err || !response) {
+                console.log({ response });
+                log.error(`Error in finding ${orderInfo}` + err);
+                return res.status(404).send({
+                    message: 'No order with this' + orderInfo + 'found'
+                })
+            }
+            log.info(`Found a order with ${orderInfo}`);
+            return res.status(200).send({
+                result: response,
+                message: `Found a order with  ${orderInfo}`
+            })
+        })
 }
 
 async function updateOrderStatusDao(orderInfo, res) {
@@ -214,5 +238,6 @@ module.exports = {
     getAllOrdersDao,
     addOrderDao,
     updateOrderDetailsDao,
-    updateOrderStatusDao
+    updateOrderStatusDao,
+    getOrdersByIdDao
 }

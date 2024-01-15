@@ -63,14 +63,27 @@ async function updateOrderStatusController(req, res) {
 
 async function getAllOrdersController(req, res) {
     console.log("controller checkpoint");
-    const loginInfo = req.params;
+    const orderInfo = req.params;
     console.log({ loginInfo });
     try {
         console.log(" Dao entering checkpoint");
-        const response = await orderDao.getAllOrdersDao(loginInfo, res);
+        const response = await orderDao.getAllOrdersDao(orderInfo, res);
         return response;
     } catch (error) {
-        log.error(`Error in getting orders by the phone no ${loginInfo.phoneNo}` + error)
+        log.error(`Error in getting orders by the phone no ${orderInfo.phoneNo}` + error)
+    }
+}
+
+async function getByIdController(req, res) {
+    console.log("controller checkpoint");
+    const orderInfo = req.params;
+    console.log({ orderInfo });
+    try {
+        console.log(" Dao entering checkpoint");
+        const response = await orderDao.getOrdersByIdDao(orderInfo, res);
+        return response;
+    } catch (error) {
+        log.error(`Error in getting orders by the phone no ${orderInfo}` + error)
     }
 }
 
@@ -89,5 +102,6 @@ module.exports = {
     getAllOrdersController,
     addOrderController,
     updateOrderDetailsController,
-    updateOrderStatusController
+    updateOrderStatusController,
+    getByIdController
 };

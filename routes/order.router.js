@@ -3,7 +3,8 @@ const {
     getAllOrdersController,
     addOrderController,
     updateOrderDetailsController,
-    updateOrderStatusController
+    updateOrderStatusController,
+    getByIdController
 } = require('../controllers/order.controller.js')
 const orderRouter = express.Router();
 
@@ -12,6 +13,8 @@ const orderRouter = express.Router();
 
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
 orderRouter.post('/addOrder', addOrderController);//working
+// getBy Id
+orderRouter.get('/getOrderById/:_orderId', getByIdController)
 orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
 orderRouter.post('/updateOrderStatus', updateOrderStatusController)//working
 
