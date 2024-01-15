@@ -24,22 +24,20 @@ const updateOrderStatusSchemaModel = {
 
 const addOrderSchemaModel = {
     phoneNo: Joi.string().max(10).min(10),
-    order: Joi.array().items(
-        Joi.object({
-            fuelType: Joi.string(),
-            fuelAmount: Joi.string(),
-            emergency: Joi.boolean(),
-            Date: Joi.date(),
-            preferredTiming: Joi.string(),
-            CoupanId: Joi.string(),
-            addressId: Joi.string(),
-            status: Joi.string(),
-            assignedTo: Joi.string(),
-            assignTiming: Joi.string()
-            // total amount after coupan
+    order: {
+        fuelType: Joi.string(),
+        fuelAmount: Joi.string(),
+        emergency: Joi.boolean(),
+        Date: Joi.date(),
+        preferredTiming: Joi.string(),
+        CoupanId: Joi.string(),
+        addressId: Joi.string(),
+        status: Joi.string(),
+        assignedTo: Joi.string(),
+        assignTiming: Joi.string()
+        // total amount after coupan
 
-        })
-    )
+    }
 };
 
 

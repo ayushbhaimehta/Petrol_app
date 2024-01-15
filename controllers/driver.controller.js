@@ -44,6 +44,17 @@ async function getAllOrdersController(req, res) {
     }
 }
 
+async function getOnlyPetrolController(req, res) {
+    const driverInfo = req.params.phoneNo;
+    console.log("flagger");
+    try {
+        const result = await driverDao.getPetrolDao(driverInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in the getorderscontroller`);
+    }
+}
+
 async function getOrdersController(req, res) {
     // console.log(req);
     const driverInfo = req.params.phoneNo;
@@ -104,5 +115,6 @@ module.exports = {
     getOrdersController,
     getAllOrdersController,
     adminLoginController,
-    updateAssignedOrdersController
+    updateAssignedOrdersController,
+    getOnlyPetrolController
 };

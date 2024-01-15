@@ -5,7 +5,8 @@ const {
     getOrdersController,
     getAllOrdersController,
     adminLoginController,
-    updateAssignedOrdersController
+    updateAssignedOrdersController,
+    getOnlyPetrolController
 } = require('../controllers/driver.controller.js')
 
 const driverRouter = express.Router();
@@ -21,6 +22,7 @@ driverRouter.get('/getAllorders/:phoneNo', getAllOrdersController);
 driverRouter.post('/updateAssignedOrders', updateAssignedOrdersController);//working
 // multiple queries for completed order
 // petrol only
+driverRouter.get('/getOnlyPetrol/:phoneNo', getOnlyPetrolController)
 // diesel only 
 // premium only
 // active orders

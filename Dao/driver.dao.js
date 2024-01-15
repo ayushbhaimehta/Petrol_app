@@ -1,6 +1,7 @@
 const Logger = require('../logger/logger');
 const log = new Logger('Driver_Dao');
 const { DriverModel } = require('../models/driverSchema');
+const { orderModel } = require('../models/order.schemaModel');
 const bcrypt = require('bcrypt');
 
 const secretKey = "12345";
@@ -102,8 +103,64 @@ async function updateDriverDao(driverInfo, res) {
     return result;
 }
 
-async function getAllOrdersDao(driverInfo, res) {
+async function getPetrolDao(driverInfo, res) {
     const phoneNo = driverInfo;
+    const result = await DriverModel.findOne({
+        phoneNo: phoneNo,
+    }, async (err, response) => {
+        if (err || !response) {
+            log.error(`error in the querry of get orders dao` + err);
+            return res.status(404).send({
+                message: 'error in fetching orders'
+            })
+        } else {
+            // use a loop and usegetbyid function
+            const array = response.assignedOrders;
+            // console.log({ array });
+            const finalArray = [];
+            for (let i = 0; i < array.length; i++) {
+                const _orderId = response.assignedOrders[i]._orderId;
+                await orderModel.findOne(
+                    {
+                        'order._id': _orderId
+                    },
+                    (e, payload) => {
+                        // console.log("checkpoint3");
+                        if (e || !payload) {
+                            console.log({ payload });
+                            // log.error(`Error in finding ` + e);
+                            return res.status(404).send({
+                                message: 'No order' + 'found'
+                            })
+                        }
+                        let temp;
+                        for (let i = 0; i < payload.order.length; i++) {
+                            if (payload.order[i]._id == _orderId &&
+                                payload.order[i].fuelType == 'petrol') {
+                                temp = payload.order[i];
+                                break;
+                            }
+                        }
+                        console.log(temp);
+                        if (temp) {
+                            finalArray.push(temp)
+                        }
+                        // finalArray.push(temp)
+                    })
+            }
+            console.log({ finalArray });
+            log.info(`successfully fetched orders for the driver with phoneNO ${phoneNo}`);
+            return res.status(200).send({
+                message: 'Successfully fetched all orders',
+                result: finalArray
+            })
+        }
+
+    })
+    return result;
+}
+
+async function getAllOrdersDao(driverInfo, res) {
     const result = await DriverModel.find({}, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
@@ -186,5 +243,6 @@ module.exports = {
     getordersDao,
     getAllOrdersDao,
     adminLoginDao,
-    updateDriverDao
+    updateDriverDao,
+    getPetrolDao
 }

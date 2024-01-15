@@ -30,20 +30,40 @@ async function getOrdersByIdDao(orderInfo, res) {
     console.log({ _orderId });
     await orderModel.findOne(
         {
-            'order._id': _orderId,
+            'order._id': _orderId
         },
         (err, response) => {
             console.log("checkpoint3");
             if (err || !response) {
                 console.log({ response });
-                log.error(`Error in finding ${orderInfo}` + err);
+                log.error(`Error in finding ` + err);
                 return res.status(404).send({
                     message: 'No order with this' + orderInfo + 'found'
                 })
             }
+            let temp;
+            for (let i = 0; i < response.order.length; i++) {
+                if (response.order[i]._id == _orderId) {
+                    temp = response.order[i];
+                    break;
+                }
+            }
+            console.log(temp);
+            // function abc() {
+            //     response.order.map((index) => {
+            //         // console.log({ index });
+            //         if (index._id == _orderId) {
+            //             // console.log({ index });
+            //             temp = index;
+            //             // return temp;
+            //         }
+            //     })
+            // }
+            // let ans = abc();
+            // console.log({ ans });
             log.info(`Found a order with ${orderInfo}`);
             return res.status(200).send({
-                result: response,
+                result: temp,
                 message: `Found a order with  ${orderInfo}`
             })
         })
