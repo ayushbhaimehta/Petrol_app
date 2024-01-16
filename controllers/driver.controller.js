@@ -104,6 +104,7 @@ async function addAdmin(req, res) {
         username: 'admin',
         password: 'admin'
     };
+    // const driverInfo=req.body;
     const result = await driverDao.addAdminDao(driverInfo, res);
     return result;
 }

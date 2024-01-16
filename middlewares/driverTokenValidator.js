@@ -27,15 +27,47 @@ async function driverTokenValidator(req, res, next) {
         //     })
         // }
 
-        await DriverModel.findOne(
-            {
-                username: username
-            },
+        await AdminModel.findOne({ username: username },
             async (err, response) => {
+                console.log("point");
+                console.log({ response });
                 if (err || !response) {
-                    return res.status(403).send({
-                        message: 'validation error with token'
-                    })
+                    await DriverModel.findOne({ username: username },
+                        async (err, response) => {
+                            if (err || !response) {
+                                return res.status(403).send({
+                                    message: 'validation error with token'
+                                })
+                            }
+                            const temp = await bcrypt.compare(password, response.password);
+                            if (!temp) {
+                                return res.status(403).send({
+                                    message: 'validation error with token'
+                                })
+                            }
+                            else {
+                                if (req.method === 'GET') {
+                                    next();
+                                }
+                                if (username !== req.body.username) {
+                                    console.log("middleware check for validation");
+                                    log.error(`username or phoneNo not matching with token`);
+                                    return res.status(403).send({
+                                        message: 'Validation error with token'
+                                    })
+                                }
+                                const flag = await bcrypt.compare(password, req.body.password);
+                                if (!flag) {
+                                    log.error(`password not matching with token`);
+                                    return res.status(403).send({
+                                        message: 'Validation error with token'
+                                    })
+                                }
+                                else {
+                                    next();
+                                }
+                            }
+                        })
                 }
                 const temp = await bcrypt.compare(password, response.password);
                 if (!temp) {
@@ -43,24 +75,7 @@ async function driverTokenValidator(req, res, next) {
                         message: 'validation error with token'
                     })
                 }
-                if (response.role === 'ADMIN') {
-                    next();
-                }
                 else {
-                    if (username !== req.body.username) {
-                        console.log("middleware check for validation");
-                        log.error(`username or phoneNo not matching with token`);
-                        return res.status(403).send({
-                            message: 'Validation error with token'
-                        })
-                    }
-                    const flag = await bcrypt.compare(password, req.body.password);
-                    if (!flag) {
-                        log.error(`password not matching with token`);
-                        return res.status(403).send({
-                            message: 'Validation error with token'
-                        })
-                    }
                     next();
                 }
             })

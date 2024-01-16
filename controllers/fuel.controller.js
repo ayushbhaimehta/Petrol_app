@@ -15,10 +15,7 @@ async function createFuelController(req, res) {
         const response = await fuelDao.addFuelDao(fuelInfo, res);
         return response;
     } catch (error) {
-        log.error(`Error in adding new fuel` + error)
-        return res.status(500).send({
-            message: `Error in adding new fuel ` + error
-        })
+        log.error(`Error in adding new fuel` + error);
     }
 }
 
@@ -44,9 +41,6 @@ async function updateFuelController(req, res) {
         return result;
     } catch (error) {
         log.error(`Error in updating user details` + error);
-        return res.status(500).send({
-            message: 'Something went wrong with updating the user details'
-        })
     }
 
 }

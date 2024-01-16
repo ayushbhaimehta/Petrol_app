@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 // const { UserEmailModel } = require('../models/user.schemaModel');
-const { DriverModel } = require('../models/driverSchema')
+const { DriverModel, AdminModel } = require('../models/driverSchema')
 const bcrypt = require('bcrypt');
 
 const secretKey = "12345";
@@ -19,7 +19,7 @@ async function adminTokenValidator(req, res, next) {
         const username = payload.username;
         const password = payload.password;
 
-        await DriverModel.findOne(
+        await AdminModel.findOne(
             {
                 username: username
             },
@@ -35,11 +35,6 @@ async function adminTokenValidator(req, res, next) {
                 if (!temp) {
                     return res.status(403).send({
                         message: 'validation error with token'
-                    })
-                }
-                if (!response.role) {
-                    return res.status(403).send({
-                        message: 'validation error with token roles'
                     })
                 }
                 else {

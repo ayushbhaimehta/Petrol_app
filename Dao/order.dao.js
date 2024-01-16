@@ -106,7 +106,7 @@ async function updateOrderDetailsDao(orderInfo, res) {
     const assignTiming = orderInfo.assignTiming;
     console.log({ phoneNo }, { status }, { assignedTo }, { assignTiming });
 
-    const result = await orderModel.findOneAndUpdate(
+    await orderModel.findOneAndUpdate(
         {
             phoneNo: phoneNo,
             "order._id": orderID
@@ -126,13 +126,14 @@ async function updateOrderDetailsDao(orderInfo, res) {
                     message: 'Error in updating order details'
                 })
             }
-            console.log(response.order[1]);
-            log.info(`Successfully updated order Details `);
-            return res.status(200).send({
-                message: 'Successfully updated order details'
-            })
+            else {
+                console.log(response.order[1]);
+                log.info(`Successfully updated order Details `);
+                return res.status(200).send({
+                    message: 'Successfully updated order details'
+                })
+            }
         })
-    return result;
 }
 
 async function phoneExists(orderInfo) {
@@ -187,71 +188,69 @@ async function addOrderDao(orderInfo, res) {
             message: 'Please add a address first to make an order'
         })
     }
-    let orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
-    console.log({ orderDetails });
-    let index = 0;
-    console.log({ index });
-    if (orderDetails) {
-        index = orderDetails.order.length;
-    }
-    if (index === 0) {
-        let newOrder = new orderModel({
-            "phoneNo": orderInfo.phoneNo,
-            "order": {
-                "fuelType": orderInfo.order.fuelType,
-                "fuelAmount": orderInfo.order.fuelAmount,
-                "emergency": orderInfo.order.emergency,
-                "Date": orderInfo.order.Date,
-                "preferredTiming": orderInfo.order.preferredTiming,
-                "CoupanId": orderInfo.order.CoupanId,
-                "addressId": orderInfo.order.addressId,
-                "status": orderInfo.order.status,
-                "assignedTo": orderInfo.order.assignedTo,
-                "assignTiming": orderInfo.order.assignTiming
-            }
-        });
-        const result = await newOrder.save((err, result) => {
-            if (err) {
-                log.error(`Error in adding first order for phoneNo ${orderInfo.phoneNo}: ` + err);
-                return res.status(500).send({
-                    message: 'phoneNo ' + orderInfo.phoneNo + ' Error in saving first order.'
-                });
-            };
-            log.info(result.phoneNo + ' has just ordered for the first time!');
-            return res.status(200).send({
-                message: 'Your first order is queued successfully.',
-                phoneNo: result.phoneNo
-            });
-        });
-        console.log("11");
-        return result;
-    }
-    const check = orderDetails.order;
-    check.push(Order)
-    console.log({ check });
-    // const response = await orderModel.findOneAndUpdate({ phoneNo: orderInfo.phoneNo }, { order: check })
-    const result = await orderModel.findOneAndUpdate({ phoneNo: phoneNo }, { order: check }, { new: true, upsert: true }, (err, response) => {
-        console.log("updatePoint");
-        if (err || !response) {
-            console.log(response);
-            log.error(`Error in adding new order` + err);
-            return res.status(400).send({
-                message: 'Error in adding new order'
-            })
+    else {
+        let orderDetails = await orderModel.findOne({ phoneNo: orderInfo.phoneNo });
+        console.log({ orderDetails });
+        let index = 0;
+        console.log({ index });
+        if (orderDetails) {
+            index = orderDetails.order.length;
         }
-        log.info(`Sucessfully added new order in the order array to phoneNo ${phoneNo}`);
-        // console.log(res);
-        return res.status(200).send({
-            message: 'Successfully added new order',
-        })
-    })
-    return result;
-
-
-    // console.log({ payload });
-    // res.status(200).send({
-    //     message: 'Testing phase'
-    // })
+        if (index === 0) {
+            let newOrder = new orderModel({
+                "phoneNo": orderInfo.phoneNo,
+                "order": {
+                    "fuelType": orderInfo.order.fuelType,
+                    "fuelAmount": orderInfo.order.fuelAmount,
+                    "emergency": orderInfo.order.emergency,
+                    "Date": orderInfo.order.Date,
+                    "preferredTiming": orderInfo.order.preferredTiming,
+                    "CoupanId": orderInfo.order.CoupanId,
+                    "addressId": orderInfo.order.addressId,
+                    "status": orderInfo.order.status,
+                    "assignedTo": orderInfo.order.assignedTo,
+                    "assignTiming": orderInfo.order.assignTiming
+                }
+            });
+            const result = await newOrder.save((err, result) => {
+                if (err) {
+                    log.error(`Error in adding first order for phoneNo ${orderInfo.phoneNo}: ` + err);
+                    return res.status(500).send({
+                        message: 'phoneNo ' + orderInfo.phoneNo + ' Error in saving first order.'
+                    });
+                };
+                log.info(result.phoneNo + ' has just ordered for the first time!');
+                return res.status(200).send({
+                    message: 'Your first order is queued successfully.',
+                    phoneNo: result.phoneNo
+                });
+            });
+            console.log("11");
+            return result;
+        }
+        else {
+            const check = orderDetails.order;
+            check.push(Order)
+            console.log({ check });
+            const result = await orderModel.findOneAndUpdate({ phoneNo: phoneNo }, { order: check }, { new: true, upsert: true }, (err, response) => {
+                console.log("updatePoint");
+                if (err || !response) {
+                    console.log(response);
+                    log.error(`Error in adding new order` + err);
+                    return res.status(400).send({
+                        message: 'Error in adding new order'
+                    })
+                }
+                else {
+                    log.info(`Sucessfully added new order in the order array to phoneNo ${phoneNo}`);
+                    return res.status(200).send({
+                        message: 'Successfully added new order',
+                    })
+                }
+            })
+            return result;
+        }
+    }
 }
 
 module.exports = {

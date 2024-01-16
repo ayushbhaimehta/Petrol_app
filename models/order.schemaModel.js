@@ -36,7 +36,6 @@ const addOrderSchemaModel = {
         assignedTo: Joi.string(),
         assignTiming: Joi.string()
         // total amount after coupan
-
     }
 };
 

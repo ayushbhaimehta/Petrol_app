@@ -16,10 +16,7 @@ async function addCoupanController(req, res) {
         return response;
         // res.status(200).send({ message: "Working" })
     } catch (error) {
-        log.error(`Error in adding new coupan ${coupanInfo}` + error)
-        return res.status(500).send({
-            message: `Error in adding new Coupan ` + error
-        })
+        log.error(`Error in adding new coupan ${coupanInfo}` + error);
     }
 }
 

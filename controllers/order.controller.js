@@ -32,14 +32,8 @@ async function updateOrderDetailsController(req, res) {
     try {
         const response = await orderDao.updateOrderDetailsDao(orderInfo, res);
         return response;
-        // return res.status(200).send({
-        //     message: 'testing phase'
-        // })
     } catch (error) {
         log.error(`Error in try catch of order controller` + error);
-        return res.status(400).send({
-            message: 'Error in updating order information'
-        })
     }
 }
 
@@ -55,9 +49,6 @@ async function updateOrderStatusController(req, res) {
         // })
     } catch (error) {
         log.error(`Error in try catch of order controller` + error);
-        return res.status(400).send({
-            message: 'Error in updating order information'
-        })
     }
 }
 

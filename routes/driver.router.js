@@ -15,18 +15,18 @@ const { adminTokenValidator } = require('../middlewares/adminTokenValidator.js')
 const driverRouter = express.Router();
 
 //admin
-driverRouter.post('/adminlogin', adminLoginController);//working
+// driverRouter.post('/adminlogin', adminLoginController);//working
 // driverRouter.post('/addAdmin', addAdmin);// deprecated service
 driverRouter.post('/addDrivers', adminTokenValidator, addDriversController,);//frist driver
-driverRouter.post('/updateAssignedOrders', adminTokenValidator, updateAssignedOrdersController);//working
+// driverRouter.post('/updateAssignedOrders', adminTokenValidator, updateAssignedOrdersController);//working
 
 
 // driverRouter.post('/testing', testingController)//working
-driverRouter.get('/getOrders/:phoneNo', getOrdersController);
+driverRouter.get('/getOrders/:phoneNo', getOrdersController);// only assigned orders working
 driverRouter.post('/login', driverLoginController);//working
-driverRouter.get('/getAllorders/:phoneNo', getAllOrdersController);
+driverRouter.get('/getAllorders', getAllOrdersController);// working
 // multiple queries for completed order
 // petrol only
-driverRouter.get('/getOnlyPetrol/:phoneNo', getOnlyPetrolController)
+driverRouter.get('/getOnlyPetrol/:phoneNo', getOnlyPetrolController)//working perfectly
 
 module.exports = driverRouter

@@ -8,9 +8,9 @@ const addDriversSchemaModel = {
     password: Joi.string(),
     name: Joi.string(),
     phoneNo: Joi.string(),
-    assignedOrders: {
-        _orderId: Joi.string(),
-    }
+    // assignedOrders: {
+    //     _orderId: Joi.string(),
+    // }
 }
 
 const getOrdersSchemaModel = {
@@ -37,16 +37,26 @@ const mongoDriverSchema = new mongoose.Schema({
     username: String,
     password: String,
     phoneNo: String,
-    assignedOrders: [
-        {
-            _orderId: String,
-        }
-        //orderIDs
-    ],
+    // assignedOrders: [
+    //     {
+    //         _orderId: String,
+    //     }
+    //     //orderIDs
+    // ],
+    role: String
+});
+
+const mongoAdminSchema = new mongoose.Schema({
+    name: String,
+    username: String,
+    password: String,
+    phoneNo: String,
     role: String
 });
 
 const DriverModel = mongoose.model('Driver', mongoDriverSchema);
+const AdminModel = mongoose.model('Admin', mongoAdminSchema);
+
 log.warn(`Driver Schema model created`);
 
 
@@ -56,5 +66,6 @@ module.exports = {
     driverLoginSchemaModel,
     getOrdersSchemaModel,
     adminLoginSchemaModel,
-    updateDriverSchemaModel
+    updateDriverSchemaModel,
+    AdminModel
 }

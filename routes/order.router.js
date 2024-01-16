@@ -14,14 +14,14 @@ const orderRouter = express.Router();
 
 // user
 orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
-orderRouter.post('/addOrder', authTokenValidator, addOrderController);//working
+orderRouter.post('/addOrder', addOrderController);//working checked
 // getBy Id
 orderRouter.get('/getOrderById/:_orderId', getByIdController)
 //admin
-orderRouter.post('/updateOrderDetails', adminTokenValidator, updateOrderDetailsController)//working
+orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
 
 // driver
-orderRouter.post('/updateOrderStatus', driverTokenValidator, updateOrderStatusController)//working
+orderRouter.post('/updateOrderStatus', updateOrderStatusController)//working
 
 
 module.exports = orderRouter;

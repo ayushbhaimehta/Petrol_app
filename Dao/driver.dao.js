@@ -1,6 +1,6 @@
 const Logger = require('../logger/logger');
 const log = new Logger('Driver_Dao');
-const { DriverModel } = require('../models/driverSchema');
+const { DriverModel, AdminModel } = require('../models/driverSchema');
 const { orderModel } = require('../models/order.schemaModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -47,35 +47,66 @@ async function driverLoginDao(driverInfo, res) {
     const username = driverInfo.username;
     const password = driverInfo.password;
 
-    const result = await DriverModel.findOne({ username: username },
+    let flag = false;
+    await AdminModel.findOne({ username: username },
         async (err, response) => {
+            console.log("point");
+            console.log({ response });
             if (err || !response) {
-                log.error(`error in finding the username` + err);
-                res.status(404).send({
-                    message: 'error in logging in!'
+                flag = true;
+            }
+            const temp = await bcrypt.compare(password, response.password);
+            if (!temp) {
+                return res.status(403).send({
+                    message: 'validation error with token'
                 })
             }
-            const isPasswordCorrect = await bcrypt.compare(password, response.password);
-            if (!isPasswordCorrect) {
-                log.info(`Incorrect password`);
-                return res.status(400).send({
-                    message: 'incorrect password'
+            else {
+                const jwtToken = jwt.sign(
+                    {
+                        "username": username,
+                        "password": password
+                    },
+                    secretKey,
+                    // { expiresIn: "90d" }
+                );
+                return res.header('x-auth-token', jwtToken).status(200).send({
+                    message: 'Logged In as admin successfully!',
+                    result: response
                 })
             }
-            const jwtToken = jwt.sign(
-                {
-                    "username": username,
-                    "password": password
-                },
-                secretKey,
-                // { expiresIn: "90d" }
-            );
-            return res.header('x-auth-token', jwtToken).status(200).send({
-                message: 'Logged In successfully!',
-                result: response
-            })
         })
-    return result;
+    if (flag) {
+        const result = await DriverModel.findOne({ username: username },
+            async (err, response) => {
+                if (err || !response) {
+                    log.error(`error in finding the username` + err);
+                    res.status(404).send({
+                        message: 'error in logging in!'
+                    })
+                }
+                const isPasswordCorrect = await bcrypt.compare(password, response.password);
+                if (!isPasswordCorrect) {
+                    log.info(`Incorrect password`);
+                    return res.status(400).send({
+                        message: 'incorrect password'
+                    })
+                }
+                const jwtToken = jwt.sign(
+                    {
+                        "username": username,
+                        "password": password
+                    },
+                    secretKey,
+                    // { expiresIn: "90d" }
+                );
+                return res.header('x-auth-token', jwtToken).status(200).send({
+                    message: 'Logged In as driver successfully!',
+                    result: response
+                })
+            })
+        return result;
+    }
 }
 
 
@@ -133,63 +164,38 @@ async function updateDriverDao(driverInfo, res) {
 
 async function getPetrolDao(driverInfo, res) {
     const phoneNo = driverInfo;
-    const result = await DriverModel.findOne({
-        phoneNo: phoneNo,
-    }, async (err, response) => {
+    const result = await orderModel.find({ 'order.assignedTo': phoneNo }, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
             return res.status(404).send({
                 message: 'error in fetching orders'
             })
-        } else {
-            // use a loop and usegetbyid function
-            const array = response.assignedOrders;
-            // console.log({ array });
-            const finalArray = [];
-            for (let i = 0; i < array.length; i++) {
-                const _orderId = response.assignedOrders[i]._orderId;
-                await orderModel.findOne(
-                    {
-                        'order._id': _orderId
-                    },
-                    (e, payload) => {
-                        // console.log("checkpoint3");
-                        if (e || !payload) {
-                            console.log({ payload });
-                            // log.error(`Error in finding ` + e);
-                            return res.status(404).send({
-                                message: 'No order' + 'found'
-                            })
-                        }
-                        let temp;
-                        for (let i = 0; i < payload.order.length; i++) {
-                            if (payload.order[i]._id == _orderId &&
-                                payload.order[i].fuelType == 'petrol') {
-                                temp = payload.order[i];
-                                break;
-                            }
-                        }
-                        console.log(temp);
-                        if (temp) {
-                            finalArray.push(temp)
-                        }
-                        // finalArray.push(temp)
-                    })
+        }
+        else {
+            console.log({ response });
+            let array = [];
+            for (let i = 0; i < response.length; i++) {
+                const orderArrSize = response[i].order.length;
+                for (let j = 0; j < orderArrSize; j++) {
+                    // console.log(response[i].order[j].assignedTo, "aabb");
+                    if (response[i].order[j].assignedTo == phoneNo && response[i].order[j].fuelType == 'petrol') {
+                        array.push(response[i].order[j]);
+                    }
+                }
             }
-            console.log({ finalArray });
+            console.log(array);
             log.info(`successfully fetched orders for the driver with phoneNO ${phoneNo}`);
             return res.status(200).send({
                 message: 'Successfully fetched all orders',
-                result: finalArray
+                result: array
             })
         }
-
     })
     return result;
 }
 
 async function getAllOrdersDao(driverInfo, res) {
-    const result = await DriverModel.find({}, (err, response) => {
+    const result = await orderModel.find({}, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
             return res.status(404).send({
@@ -207,18 +213,32 @@ async function getAllOrdersDao(driverInfo, res) {
 
 async function getordersDao(driverInfo, res) {
     const phoneNo = driverInfo;
-    const result = await DriverModel.findOne({ phoneNo: phoneNo }, (err, response) => {
+    const result = await orderModel.find({ 'order.assignedTo': phoneNo }, (err, response) => {
         if (err || !response) {
             log.error(`error in the querry of get orders dao` + err);
             return res.status(404).send({
                 message: 'error in fetching orders'
             })
         }
-        log.info(`successfully fetched orders for the driver with phoneNO ${phoneNo}`);
-        return res.status(200).send({
-            message: 'Successfully fetched all orders',
-            result: response
-        })
+        else {
+            console.log({ response });
+            let array = [];
+            for (let i = 0; i < response.length; i++) {
+                const orderArrSize = response[i].order.length;
+                for (let j = 0; j < orderArrSize; j++) {
+                    // console.log(response[i].order[j].assignedTo, "aabb");
+                    if (response[i].order[j].assignedTo == phoneNo) {
+                        array.push(response[i].order[j]);
+                    }
+                }
+            }
+            console.log(array);
+            log.info(`successfully fetched orders for the driver with phoneNO ${phoneNo}`);
+            return res.status(200).send({
+                message: 'Successfully fetched all orders',
+                result: array
+            })
+        }
     })
     return result;
 }
@@ -230,12 +250,11 @@ async function addAdminDao(driverInfo, res) {
     const password = driverInfo.password;
     const name = driverInfo.name;
 
-    let newAdmin = new DriverModel({
+    let newAdmin = new AdminModel({
         name: name,
         username: username,
         password: password,
-        phoneNo: '',
-        assignedOrders: [],
+        phoneNo: '1234567890',
         role: 'ADMIN'
     })
     newAdmin.password = await bcrypt.hash(password, 12);
@@ -243,7 +262,7 @@ async function addAdminDao(driverInfo, res) {
         if (err || !response) {
             return res.status(400).send('error in adding Admin');
         }
-        return res.status(200).send('Addmin Created')
+        return res.status(200).send('Admin Created')
     })
 }
 
@@ -259,7 +278,7 @@ async function addDriversDao(driverInfo, res) {
                 username: driverInfo.username,
                 password: driverInfo.password,
                 phoneNo: phoneNo,
-                assignedOrders: [{ _orderId: driverInfo.assignedOrders._orderId, }],
+                // assignedOrders: [{ _orderId: driverInfo.assignedOrders._orderId, }],
             })
             newDriver.password = await bcrypt.hash(driverInfo.password, 12);
             console.log({ newDriver });
