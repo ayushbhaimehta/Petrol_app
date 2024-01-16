@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const { DriverModel } = require('../models/driverSchema')
 const bcrypt = require('bcrypt');
 
-const secretKey = "123456789";
+const secretKey = "12345";
 
 async function driverTokenValidator(req, res, next) {
     const token = req.header('x-auth-token');
+    console.log("check", { token });
     if (!token) {
         return res.status(403).send({
             message: 'Access denied authentication token not found'
@@ -26,21 +27,6 @@ async function driverTokenValidator(req, res, next) {
         //     })
         // }
 
-
-        if (username !== req.body.username) {
-            console.log("middleware check for validation");
-            log.error(`username or phoneNo not matching with token`);
-            return res.status(403).send({
-                message: 'Validation error with token'
-            })
-        }
-        const flag = await bcrypt.compare(password, req.body.password);
-        if (!flag) {
-            log.error(`password not matching with token`);
-            return res.status(403).send({
-                message: 'Validation error with token'
-            })
-        }
         await DriverModel.findOne(
             {
                 username: username
@@ -57,9 +43,28 @@ async function driverTokenValidator(req, res, next) {
                         message: 'validation error with token'
                     })
                 }
+                if (response.role === 'ADMIN') {
+                    next();
+                }
+                else {
+                    if (username !== req.body.username) {
+                        console.log("middleware check for validation");
+                        log.error(`username or phoneNo not matching with token`);
+                        return res.status(403).send({
+                            message: 'Validation error with token'
+                        })
+                    }
+                    const flag = await bcrypt.compare(password, req.body.password);
+                    if (!flag) {
+                        log.error(`password not matching with token`);
+                        return res.status(403).send({
+                            message: 'Validation error with token'
+                        })
+                    }
+                    next();
+                }
             })
 
-        next();
     } catch (err) {
         return res.status(403).send({
             message: 'Access denied invalid authentication token'

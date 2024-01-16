@@ -98,6 +98,16 @@ async function updateAssignedOrdersController(req, res) {
     }
 }
 
+async function addAdmin(req, res) {
+    const driverInfo = {
+        name: 'Admin',
+        username: 'admin',
+        password: 'admin'
+    };
+    const result = await driverDao.addAdminDao(driverInfo, res);
+    return result;
+}
+
 function isNotValidSchema(error, res) {
     if (error) {
         log.error(`Schema validation error:${error.details[0].message}`);
@@ -116,5 +126,6 @@ module.exports = {
     getAllOrdersController,
     adminLoginController,
     updateAssignedOrdersController,
-    getOnlyPetrolController
+    getOnlyPetrolController,
+    addAdmin
 };

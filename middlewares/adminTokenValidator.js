@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { DriverModel } = require('../models/driverSchema')
 const bcrypt = require('bcrypt');
 
-const secretKey = "123456789";
+const secretKey = "12345";
 
 async function adminTokenValidator(req, res, next) {
     const token = req.header('x-auth-token');
@@ -19,35 +19,13 @@ async function adminTokenValidator(req, res, next) {
         const username = payload.username;
         const password = payload.password;
 
-
-        // if (req.method === 'GET' && username !== req.params.username) {
-        //     console.log("middleware check for validation");
-        //     log.error(`username or phoneNo not matching with token`);
-        //     return res.status(403).send({
-        //         message: 'Validation error with token'
-        //     })
-        // }
-
-
-        if (username !== req.body.username) {
-            console.log("middleware check for validation");
-            log.error(`username or phoneNo not matching with token`);
-            return res.status(403).send({
-                message: 'Validation error with token'
-            })
-        }
-        const flag = await bcrypt.compare(password, req.body.password);
-        if (!flag) {
-            log.error(`password not matching with token`);
-            return res.status(403).send({
-                message: 'Validation error with token'
-            })
-        }
         await DriverModel.findOne(
             {
                 username: username
             },
             async (err, response) => {
+                console.log("point");
+                console.log({ response });
                 if (err || !response) {
                     return res.status(403).send({
                         message: 'validation error with token'
@@ -59,13 +37,15 @@ async function adminTokenValidator(req, res, next) {
                         message: 'validation error with token'
                     })
                 }
-                if (response.role !== 'ADMIN') {
+                if (!response.role) {
                     return res.status(403).send({
-                        message: 'validation error with token'
+                        message: 'validation error with token roles'
                     })
                 }
+                else {
+                    next();
+                }
             })
-        next();
     } catch (err) {
         return res.status(403).send({
             message: 'Access denied invalid authentication token'

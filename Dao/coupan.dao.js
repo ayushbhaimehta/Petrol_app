@@ -30,36 +30,41 @@ async function getAllCoupansDao(coupanInfo, res) {
 
 async function addCoupanDao(coupanInfo, res) {
     console.log({ coupanInfo });
-    let newCoupan = new CoupanModel({
-        "name": coupanInfo.name,
-        "code": coupanInfo.code,
-        "discount": coupanInfo.discount,
-        "validTill": coupanInfo.validTill,
-        "limit": coupanInfo.limit
-    });
 
-    await CoupanModel.findOne({ code: coupanInfo.code }, (err, response) => {
-        if (!err || response) {
+    await CoupanModel.findOne({ code: coupanInfo.code }, async (err, response) => {
+        if (err || response) {
+            console.log({ err }, { response });
             return res.status(409).send({
                 message: 'coupan already exists'
             })
         }
-    })
+        else {
+            let newCoupan = new CoupanModel({
+                "name": coupanInfo.name,
+                "code": coupanInfo.code,
+                "discount": coupanInfo.discount,
+                "validTill": coupanInfo.validTill,
+                "limit": coupanInfo.limit
+            });
 
-    const result = await newCoupan.save((err, response) => {
-        console.log("save querry entered");
-        if (err || !response) {
-            log.error(`Error in adding new coupan ` + err);
-            return res.status(500).send({
-                message: 'error in adding new coupana'
+            const result = await newCoupan.save((error, payload) => {
+                console.log("save querry entered");
+                if (error || !payload) {
+                    log.error(`Error in adding new coupan ` + error);
+                    return res.status(500).send({
+                        message: 'error in adding new coupana'
+                    })
+                } else {
+                    log.blink('New coupan has been added to the db');
+                    return res.status(200).send({
+                        message: 'New Coupan has successfully added'
+                    })
+                }
+
             })
+            return result;
         }
-        log.blink('New coupan has been added to the db');
-        return res.status(200).send({
-            message: 'New Coupan has successfully added'
-        })
     })
-    return result;
 
 }
 

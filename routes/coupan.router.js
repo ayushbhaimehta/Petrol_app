@@ -8,7 +8,7 @@ const { adminTokenValidator } = require('../middlewares/adminTokenValidator.js')
 
 const coupanRouter = express.Router();
 
-coupanRouter.get('/getCoupans/:phoneNo', getAllCoupansController);//working
+coupanRouter.get('/getCoupans', getAllCoupansController);//working
 coupanRouter.post('/addCoupans', adminTokenValidator, addCoupanController);//working
 
 module.exports = coupanRouter;

@@ -25,9 +25,7 @@ async function addCoupanController(req, res) {
 
 async function getAllCoupansController(req, res) {
     log.info('controller entered');
-    const coupanInfo = req.params;
-    let { error } = CoupanValidator.validateGetAllCoupansSchema(coupanInfo, res);
-    if (isNotValidSchema(error, res)) return;
+    const coupanInfo = req;
 
     try {
         const result = await coupanDao.getAllCoupansDao(coupanInfo, res);

@@ -3,6 +3,7 @@ const log = new Logger('Driver_Dao');
 const { DriverModel } = require('../models/driverSchema');
 const { orderModel } = require('../models/order.schemaModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const secretKey = "12345";
 
@@ -76,6 +77,7 @@ async function driverLoginDao(driverInfo, res) {
         })
     return result;
 }
+
 
 async function updateDriverDao(driverInfo, res) {
     console.log("check 2");
@@ -221,6 +223,30 @@ async function getordersDao(driverInfo, res) {
     return result;
 }
 
+
+async function addAdminDao(driverInfo, res) {
+    console.log({ driverInfo });
+    const username = driverInfo.username;
+    const password = driverInfo.password;
+    const name = driverInfo.name;
+
+    let newAdmin = new DriverModel({
+        name: name,
+        username: username,
+        password: password,
+        phoneNo: '',
+        assignedOrders: [],
+        role: 'ADMIN'
+    })
+    newAdmin.password = await bcrypt.hash(password, 12);
+    await newAdmin.save((err, response) => {
+        if (err || !response) {
+            return res.status(400).send('error in adding Admin');
+        }
+        return res.status(200).send('Addmin Created')
+    })
+}
+
 async function addDriversDao(driverInfo, res) {
 
     console.log({ driverInfo }, " dao layer entered");
@@ -270,5 +296,6 @@ module.exports = {
     getAllOrdersDao,
     adminLoginDao,
     updateDriverDao,
-    getPetrolDao
+    getPetrolDao,
+    addAdminDao
 }
