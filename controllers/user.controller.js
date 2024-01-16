@@ -330,6 +330,17 @@ async function getByPhoneNoController(req, res) {
     }
 }
 
+async function getByIdController(req, res) {
+    const loginInfo = req.params.Id;
+    try {
+        const result = await userDao.getaddressbyIdDao(loginInfo, res);
+        return result;
+    } catch (error) {
+        log.error(`Error in getting userdata by this id ${loginInfo.Id}` + error);
+
+    }
+}
+
 async function updateAddress(req, res) {
     const loginInfo = req.body;
     let { err } = userValidator.validateUpdateAddressSchema(loginInfo, res);
@@ -454,5 +465,6 @@ module.exports = {
     addressDeleteController,
     sendEmailOtp,
     verifyEmailOtp,
-    updateNameController
+    updateNameController,
+    getByIdController
 };

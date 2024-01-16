@@ -22,11 +22,11 @@ driverRouter.post('/addDrivers', adminTokenValidator, addDriversController,);//f
 
 
 // driverRouter.post('/testing', testingController)//working
-driverRouter.get('/getOrders/:phoneNo', getOrdersController);// only assigned orders working
+driverRouter.get('/getOrders/:phoneNo', driverTokenValidator, getOrdersController);// only assigned orders working
 driverRouter.post('/login', driverLoginController);//working
-driverRouter.get('/getAllorders', getAllOrdersController);// working
+driverRouter.get('/getAllorders', adminTokenValidator, getAllOrdersController);// working
 // multiple queries for completed order
 // petrol only
-driverRouter.get('/getOnlyPetrol/:phoneNo', getOnlyPetrolController)//working perfectly
+driverRouter.get('/getOnlyPetrol/:phoneNo', driverTokenValidator, getOnlyPetrolController)//working perfectly
 
 module.exports = driverRouter

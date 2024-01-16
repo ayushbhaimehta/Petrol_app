@@ -34,8 +34,9 @@ const addOrderSchemaModel = {
         addressId: Joi.string(),
         status: Joi.string(),
         assignedTo: Joi.string(),
-        assignTiming: Joi.string()
+        assignTiming: Joi.string(),
         // total amount after coupan
+        totalAmount: Joi.string()
     }
 };
 
@@ -52,7 +53,8 @@ const mongoOrderSchema = new mongoose.Schema({
         addressId: String,
         status: String,
         assignedTo: String,
-        assignTiming: String
+        assignTiming: String,
+        totalAmount: String
         // flag status
         // Assigned to?
         // assign timing

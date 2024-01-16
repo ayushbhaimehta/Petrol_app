@@ -47,7 +47,13 @@ async function driverTokenValidator(req, res, next) {
                             }
                             else {
                                 if (req.method === 'GET') {
-                                    next();
+                                    if (response.phoneNo !== req.params.phoneNo) {
+                                        return res.status(403).send({
+                                            message: 'Validation error with get request token'
+                                        })
+                                    } else {
+                                        next();
+                                    }
                                 }
                                 if (username !== req.body.username) {
                                     console.log("middleware check for validation");

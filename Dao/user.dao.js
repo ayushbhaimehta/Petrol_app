@@ -19,14 +19,46 @@ async function getByUsername(loginInfo, response) {
                 message: 'No user with username ' + username
             });
         }
+        else {
+            log.info(`Foudn a user with data ${res.username}`);
+            return response.status(200).send({
+                // username: username,
+                phoneNo: res.phoneNo,
+                result: res,
+                message: 'Found a user with username ' + username
+            })
+        }
+    })
+}
 
-        log.info(`Foudn a user with data ${res.username}`);
-        return response.status(200).send({
-            // username: username,
-            phoneNo: res.phoneNo,
-            result: res,
-            message: 'Found a user with username ' + username
-        })
+async function getaddressbyIdDao(loginInfo, res) {
+    const _id = loginInfo;
+
+    await UserModel.findOne({ 'address._id': _id }, async (err, response) => {
+        if (err || !res) {
+            log.error(`Error in finding user with ${_id}` + err);
+            return res.status(404).send({
+                username: _id,
+                message: 'No user with ' + _id + 'found'
+            });
+        }
+        else {
+            let array = [];
+            // console.log(response.address);s
+            for (let i = 0; i < response.address.length; i++) {
+                if (response.address[i]._id == _id) {
+                    array.push(response.address[i]);
+                    break;
+                }
+            }
+            console.log(array);
+            log.info(`Foudn a user with data ${_id}`);
+            return res.status(200).send({
+                // username: username,
+                result: array,
+                message: 'Found a user with ' + _id
+            })
+        }
     })
 }
 
@@ -297,5 +329,6 @@ module.exports = {
     addAddressDao,
     updateUsernameDao,
     deleteAddressDao,
-    updateUsernameDao
+    updateUsernameDao,
+    getaddressbyIdDao
 }

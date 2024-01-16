@@ -13,15 +13,16 @@ const { adminTokenValidator } = require('../middlewares/adminTokenValidator.js')
 const orderRouter = express.Router();
 
 // user
-orderRouter.get('/getOrders/:phoneNo', getAllOrdersController,);//working
+orderRouter.get('/getOrders/:phoneNo', authTokenValidator, getAllOrdersController,);//working checked
 orderRouter.post('/addOrder', addOrderController);//working checked
 // getBy Id
-orderRouter.get('/getOrderById/:_orderId', getByIdController)
+// orderRouter.get('/getOrderById/:_adrId', getByIdController)
+
 //admin
-orderRouter.post('/updateOrderDetails', updateOrderDetailsController)//working
+orderRouter.post('/updateOrderDetails', adminTokenValidator, updateOrderDetailsController)//working checked
 
 // driver
-orderRouter.post('/updateOrderStatus', updateOrderStatusController)//working
+orderRouter.post('/updateOrderStatus', driverTokenValidator, updateOrderStatusController)//working checked
 
 
 module.exports = orderRouter;

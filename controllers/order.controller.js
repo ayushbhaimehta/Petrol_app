@@ -55,7 +55,6 @@ async function updateOrderStatusController(req, res) {
 async function getAllOrdersController(req, res) {
     console.log("controller checkpoint");
     const orderInfo = req.params;
-    console.log({ loginInfo });
     try {
         console.log(" Dao entering checkpoint");
         const response = await orderDao.getAllOrdersDao(orderInfo, res);
