@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 const registerInputUserSchemaModel = {
     name: Joi.string().allow(''),
-    username: Joi.string().allow(''),
+    username: Joi.string().email().allow(''),
     phoneNo: Joi.string().max(15),
     address: Joi.array().items(
         Joi.object({
@@ -40,9 +40,9 @@ const mongoEmailOtp = new mongoose.Schema({
 });
 
 const verifyEmailOtpSchemaModel = {
-    name: Joi.string(),
-    email: Joi.string().max(50),
-    emailOtp: Joi.string().max(6)
+    name: Joi.string().required(),
+    email: Joi.string().max(50).required(),
+    emailOtp: Joi.string().max(6).required()
 }
 
 const mongoUserSchema = new mongoose.Schema({
@@ -63,12 +63,12 @@ const mongoUserSchema = new mongoose.Schema({
 });
 
 const loginSchemaModel = {
-    username: Joi.string().required(),
+    username: Joi.string().email().required(),
     password: Joi.string().required()
 }
 
 const validateGetUsernameSchema = {
-    username: Joi.string().required()
+    username: Joi.string().email().required()
 }
 
 const getByPhoneNoSchema = {
@@ -76,12 +76,12 @@ const getByPhoneNoSchema = {
 }
 
 const getByUsernameSchema = {
-    username: Joi.string().required()
+    username: Joi.string().email().required()
 }
 
 const updateDetailsSchemaModel = {
     phoneNo: Joi.string(),
-    username: Joi.string(),
+    username: Joi.string().email(),
 }
 
 const updateNameSchemaModel = {
@@ -126,7 +126,7 @@ const sendOtpSchemaModel = {
 }
 
 const sendOtpEmailSchemaModel = {
-    username: Joi.string(),
+    username: Joi.string().email(),
 }
 
 const verifyOtpSchemaModel = {
