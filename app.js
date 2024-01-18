@@ -46,6 +46,7 @@ const orderservicerouter = require('./routes/order.router');
 const coupanservicerouter = require('./routes/coupan.router');
 const driverservicerouter = require('./routes/driver.router')
 const fuelservicerouter = require('./routes/fuel.router')
+const dbCollectionservicerouter = require('./routes/dbCollection.router')
 
 // -----------------> Routes Setup <---------------------------------//
 app.use('/user', userservicerouter);
@@ -53,6 +54,7 @@ app.use('/order', orderservicerouter);
 app.use('/coupan', coupanservicerouter);
 app.use('/driver', driverservicerouter);
 app.use('/fuel', fuelservicerouter);
+app.use('/dbCollection', dbCollectionservicerouter);
 
 
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));

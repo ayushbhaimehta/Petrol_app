@@ -418,8 +418,8 @@ async function getByIdController(req, res) {
 
 async function updateAddress(req, res) {
     const loginInfo = req.body;
-    let { err } = userValidator.validateUpdateAddressSchema(loginInfo, res);
-    if (isNotValidSchema(err, res)) return;
+    let { error } = userValidator.validateUpdateAddressSchema(loginInfo, res);
+    if (isNotValidSchema(error, res)) return;
     try {
         console.log("checkpoint 2");
         const response = await userDao.updateAddressDao(loginInfo, res);

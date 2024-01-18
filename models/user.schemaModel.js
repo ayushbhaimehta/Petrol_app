@@ -40,9 +40,9 @@ const mongoEmailOtp = new mongoose.Schema({
 });
 
 const verifyEmailOtpSchemaModel = {
-    name: Joi.string().required(),
-    email: Joi.string().max(50).required(),
-    emailOtp: Joi.string().max(6).required()
+    name: Joi.string().max(50).required(),
+    email: Joi.string().max(50).email().required(),
+    emailOtp: Joi.string().max(6).min(6).required()
 }
 
 const mongoUserSchema = new mongoose.Schema({
@@ -122,11 +122,11 @@ const addAddressSchemaModel = {
 
 const sendOtpSchemaModel = {
     phoneNo: Joi.string().required().min(10).max(10),
-    countryCode: Joi.string().required(),
+    countryCode: Joi.string().max(5).required(),
 }
 
 const sendOtpEmailSchemaModel = {
-    username: Joi.string().email(),
+    username: Joi.string().email().max(50),
 }
 
 const verifyOtpSchemaModel = {

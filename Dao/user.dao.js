@@ -123,11 +123,13 @@ async function getByPhoneNo(loginInfo, res) {
                 message: 'No user with this ' + phoneNo + 'found'
             })
         }
-        log.info(`Found a user with phone No ${phoneNo}`);
-        return res.status(200).send({
-            result: response,
-            message: `FOund a user with phoneno ${phoneNo}`
-        })
+        else {
+            log.info(`Found a user with phone No ${phoneNo}`);
+            return res.status(200).send({
+                result: response,
+                message: `FOund a user with phoneno ${phoneNo}`
+            })
+        }
     })
 }
 
@@ -338,8 +340,6 @@ async function validateLoginUser(loginInfo, response) {
         }
     });
 }
-
-
 
 module.exports = {
     resgisterNewUser,
