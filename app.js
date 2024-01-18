@@ -11,8 +11,7 @@ require('dotenv').config()
 // set env
 const environment = process.env.NODE_ENV || "development";
 console.log({ environment });
-const dbUrl = "mongodb+srv://ayush:ayush@cluster0.rajkpzr.mongodb.net/";
-
+const dbUrl = "mongodb+srv://ayush:ayush@cluster0.jikoqbw.mongodb.net/";
 // Whitelisdty
 const whitelist = [
     '*'

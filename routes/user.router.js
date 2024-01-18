@@ -12,8 +12,8 @@ const {
     sendEmailOtp,
     verifyEmailOtp,
     updateNameController,
-    getByIdController
-    // emailOtpVerifyController
+    getByIdController,
+    verifyUpdatePhoneController
 } = require('../controllers/user.controller')
 const { authTokenValidator } = require('../middlewares/authTokenValidator');
 const userRouter = express.Router();
@@ -21,8 +21,9 @@ const userRouter = express.Router();
 userRouter.get('/getbyusername/:username', getByUsernameController,);//working
 userRouter.get('/getbyphoneno/:phoneno', getByPhoneNoController,);//working
 // getAdrbyID
-userRouter.get('/getbyaddressbyId/:Id', getByIdController);
-userRouter.post('/updatephone', authTokenValidator, updatePhoneController,);//working
+userRouter.get('/getbyaddressbyId/:Id', getByIdController);//working
+userRouter.post('/updatephone', updatePhoneController,);//working
+userRouter.post('/verifyUpdatePhone', verifyUpdatePhoneController,);//working
 userRouter.post('/updateAddress', authTokenValidator, updateAddress,);//working
 userRouter.post('/addAddress', authTokenValidator, addAdressController,);//working
 userRouter.delete('/deleteAddress', authTokenValidator, addressDeleteController);//working

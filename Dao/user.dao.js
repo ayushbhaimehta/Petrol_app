@@ -1,6 +1,8 @@
 const Logger = require('../logger/logger');
 const log = new Logger('User_Dao');
-const { UserModel } = require('../models/user.schemaModel')
+const { UserModel } = require('../models/user.schemaModel');
+const axios = require('axios')
+
 
 const secretKey = "12345"
 
@@ -288,21 +290,41 @@ async function updatePhoneNo(loginInfo, res) {
     const phoneNo = loginInfo.phoneNo;
     const newPhoneNo = loginInfo.newPhoneNo;
     console.log({ phoneNo }, "moment of truth flag");
-    await UserModel.findOneAndUpdate({ phoneNo: phoneNo }, { phoneNo: newPhoneNo }, (err, response) => {
-        console.log("updatePoint");
+    await UserModel.findOne({ phoneNo: newPhoneNo }, (err, response) => {
         if (err || !response) {
-            log.error(`Error while updating the phone No ${phoneNo}`);
-            return res.status(404).send({
-                message: 'Error in updating the phoneNo',
-                phoneNo: phoneNo
+            // send otp and verify
+            axios({
+                method: 'POST',
+                mode: 'no-cors',
+                url: "http://localhost:3000/user/sendotp",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                data: {
+                    "countryCode": "+91",
+                    "phoneNo": newPhoneNo
+                }
+            }).then(result => {
+                console.log(result);
+                log.info('Successfully sent an otp to the new phoneNo');
+                return res.status(200).send({
+                    message: 'Otp sent to new phoen no'
+                })
+            })
+                .catch(err => {
+                    console.log(err);
+                    return res.status(404).send({
+                        message: 'error in sending otp'
+                    })
+                });
+        }
+        else {
+            return res.status(407).send({
+                message: 'User already exists with this phone No'
             })
         }
-        log.info(`Successfully updated the phoneNo from ${phoneNo} to ${newPhoneNo}`);
-        return res.status(200).send({
-            message: `updated the phoneNo from ${phoneNo} to ${newPhoneNo}`,
-            phoneNo: newPhoneNo
-        })
-    });
+    })
 }
 async function validateLoginUser(loginInfo, response) {
     const username = loginInfo.username;

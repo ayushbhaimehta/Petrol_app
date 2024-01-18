@@ -2,9 +2,10 @@ const userValidator = require('../models/userSchema.validator');
 const userDao = require('../Dao/user.dao');
 const Logger = require('../logger/logger');
 const log = new Logger('User_Controller');
-const accountSid = "ACbffa96f58fed1305d2095c51452c17ff";
-const authToken = "6d8c9c1dadcf73816c2fbefce03234f2";
-const client = require("twilio")(accountSid, authToken);
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+const verifySid = process.env.verifySID;
 const { UserModel, UserEmailModel } = require('../models/user.schemaModel')
 const jwt = require('jsonwebtoken');
 const otpGenerator = require('otp-generator');
@@ -51,7 +52,6 @@ async function registerNewUser(req, res) {
     }
 }
 
-const verifySid = "VA3b02c8ea4c1783a75cbdc761cc5199b2";
 const secretKey = "123456789"
 // client.verify.v2
 //     .services(verifySid)
@@ -230,6 +230,7 @@ async function sendOtpController(req, res) {
     if (isNotValidSchema(error, res)) return;
     try {
         // send otp service
+        console.log(client);
         const otpResponse = await client.verify.v2
             .services(verifySid)
             .verifications.create({
@@ -255,6 +256,57 @@ async function check(phoneNo) {
     return await UserModel.findOne({ phoneNo: phoneNo });
 }
 
+async function verifyUpdatePhoneController(req, res) {
+    const loginInfo = req.body;
+    console.log(req.header('x-auth-token'));
+
+    const otp = loginInfo.OTP;
+    const phoneNo = loginInfo.phoneNo;
+    const oldPhoneNo = loginInfo.oldPhoneNo;
+    let { error } = userValidator.validateVerifyUpdatePhoneNoSchema(loginInfo);
+    if (isNotValidSchema(error, res)) return;
+    try {
+        const verifiedResponse = await client.verify.v2.services(verifySid)
+            .verificationChecks
+            .create({ to: `${loginInfo.countryCode}${loginInfo.phoneNo}`, code: otp });
+
+        if (verifiedResponse.status === 'approved') {
+            log.info(`Successfully verified`);
+            // const user = await getUserRole(loginInfo.phoneNo, res);
+            // console.log({ user }, "Important check");
+            const jwtToken = jwt.sign(
+                {
+                    "phoneNo": loginInfo.phoneNo,
+                    // "username": loginInfo.username,
+                },
+                secretKey,
+                // { expiresIn: "90d" }
+            );
+            res.header('x-auth-token', jwtToken);
+            await UserModel.findOneAndUpdate({ phoneNo: oldPhoneNo },
+                { phoneNo: phoneNo },
+                (err, response) => {
+                    if (err || !response) {
+                        log.error(`Erro in updating phoen No!`);
+                        return res.status(404).send({
+                            message: 'Error in updating phone no'
+                        })
+                    }
+                    else {
+                        return res.status(200).send({
+                            message: 'Updated phoneNo Successfully'
+                        })
+                    }
+                })
+        }
+    } catch (error) {
+        log.error(`Error in verifing the otp` + error);
+        res.status(404).send({
+            message: 'Wrong otp'
+        })
+    }
+}
+
 async function verifyOtpController(req, res) {
     const loginInfo = req.body;
     const otp = loginInfo.OTP;
@@ -268,6 +320,7 @@ async function verifyOtpController(req, res) {
             .create({ to: `${loginInfo.countryCode}${loginInfo.phoneNo}`, code: otp });
         // .create({ to: loginInfo.phoneNo, code: otp });
         // console.log(verifiedResponse, "abc");
+
         if (verifiedResponse.status === 'approved') {
             log.info(`Successfully verified`);
             // const user = await getUserRole(loginInfo.phoneNo, res);
@@ -488,5 +541,6 @@ module.exports = {
     sendEmailOtp,
     verifyEmailOtp,
     updateNameController,
-    getByIdController
+    getByIdController,
+    verifyUpdatePhoneController
 };

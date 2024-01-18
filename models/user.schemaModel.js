@@ -135,6 +135,13 @@ const verifyOtpSchemaModel = {
     OTP: Joi.string().required().min(6).max(6),
 }
 
+const verifyUpdatePhoneNoSchemaModel = {
+    phoneNo: Joi.string().required().min(10).max(10),
+    oldPhoneNo: Joi.string().required(),
+    countryCode: Joi.string().required(),
+    OTP: Joi.string().required().min(6).max(6),
+}
+
 mongoUserSchema.methods.encryptPassword = function () {
     return bcrypt.hashSync(this.password, 10, (err) => {
         if (err) {
@@ -163,5 +170,6 @@ module.exports = {
     deleteAddressSchemaModel,
     UserEmailModel,
     verifyEmailOtpSchemaModel,
-    updateNameSchemaModel
+    updateNameSchemaModel,
+    verifyUpdatePhoneNoSchemaModel
 }
